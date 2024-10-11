@@ -1,6 +1,14 @@
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
+    firstName:{ 
+        type: String,
+        required: true
+    },
+    lastName:{ 
+        type: String,
+        required: true
+    },
     email:{
         type: String,
         required: true,
@@ -9,6 +17,10 @@ const UserSchema = new mongoose.Schema({
     password:{
         type: String,
         required: true
+    },
+    fridge: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Fridge'
     }
 }, { timestamps: true });
 
