@@ -1,16 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
-import LoginScreen from './LoginScreen';
-import RegistrationScreen from './RegistrationScreen';
+import LoginScreen from '../app/LoginScreen';
 
 export default function Index() {
   return (
     <View style={styles.container}>
       <LoginScreen />
-      <Link href="/RegistrationScreen" style={styles.link}>
-        Don’t have an account? Register
-      </Link>
     </View>
   );
 }
@@ -18,14 +13,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eeeeee',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  link: {
-    fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
-    marginTop: 20,
+    backgroundColor: '#fff',
   },
 });
