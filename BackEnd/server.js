@@ -8,8 +8,6 @@ import mongoose from 'mongoose';
 
 const app = express();
 
-const port = process.env.PORT || 4000;
-
 app.use(express.json());
 
 app.use(cors());
@@ -21,7 +19,7 @@ app.use('/api/fridge', fridgeRoutes);
 
 mongoose.connect('mongodb+srv://sergiok:Ivyleague123@cluster0.yqwum.mongodb.net', { dbName: 'demo_db' }).then(() => {
     console.log('Connected to MongoDB');
-    app.listen(port, 'localhost', () => {
+    app.listen(4000, 'localhost', () => {
         console.log('listening on port 4000');
     });
 }).catch(err => {
