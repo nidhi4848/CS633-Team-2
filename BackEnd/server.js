@@ -19,13 +19,9 @@ app.use('/api/fridge', fridgeRoutes);
 
 mongoose.connect('mongodb+srv://sergiok:Ivyleague123@cluster0.yqwum.mongodb.net', { dbName: 'demo_db' }).then(() => {
     console.log('Connected to MongoDB');
-    app.listen(4000, 'localhost', () => {
+    app.listen(4000, '0.0.0.0', () => {
         console.log('listening on port 4000');
     });
 }).catch(err => {
     console.log(err);
 });
-
-
-
-
