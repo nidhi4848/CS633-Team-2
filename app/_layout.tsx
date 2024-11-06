@@ -32,7 +32,7 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
-        name="registration"
+        name="RegistrationScreen"
         options={{
           headerShown: false,
           presentation: 'modal',

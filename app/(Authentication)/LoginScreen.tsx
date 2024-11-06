@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { loginUser } from '../../api/usersController';
 import {
   View,
   Text,
@@ -48,10 +49,10 @@ const LoginScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await loginUser(email, password);
       Alert.alert('Success', 'Login successful!');
     } catch (error) {
+      console.log(error);
       Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -59,9 +60,10 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-    // Fixed: Removed leading slash and explicit typing
-    router.push({ pathname: '/RegistrationScreen' });
+    // Updated route string
+    router.push('/(Authentication)/RegistrationScreen');
   };
+
 
   return (
     <SafeAreaView style={styles.container}>

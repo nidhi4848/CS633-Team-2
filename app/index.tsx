@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import LoginScreen from '../app/LoginScreen';
+import LoginScreen from './(Authentication)/LoginScreen';
 
 export default function Index() {
   return (
