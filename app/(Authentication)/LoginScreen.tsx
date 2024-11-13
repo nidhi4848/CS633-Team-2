@@ -11,7 +11,9 @@ import {
   Platform,
   SafeAreaView,
   ActivityIndicator,
+  Button,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
 
 const LoginScreen: React.FC = () => {
@@ -19,6 +21,7 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: '', password: '' });
+  const navigation = useNavigation();
 
   const validateForm = () => {
     let isValid = true;
@@ -60,10 +63,8 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-    // Updated route string
     router.push('/(Authentication)/RegistrationScreen');
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -126,6 +127,12 @@ const LoginScreen: React.FC = () => {
               Don't have an account? <Text style={styles.registerTextBold}>Register</Text>
             </Text>
           </TouchableOpacity>
+
+          {/* Development Skip Login Button */}
+          <Button
+            title="Skip Login (Dev)"
+            onPress={() => navigation.navigate('homepage')}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
