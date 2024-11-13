@@ -30,7 +30,7 @@ const Homepage: React.FC<HomepageProps> = ({ userName = "User", userInitials = "
             <Text style={styles.buttonText}>Fridge & Pantry</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Meal_Plans')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('mealplanpage')}>
             <Text style={styles.buttonText}>Meal Plans</Text>
           </TouchableOpacity>
 
