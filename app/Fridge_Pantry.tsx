@@ -1,69 +1,84 @@
-import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import RNPickerSelect from 'react-native-picker-select';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-type ListItemProps = {
-  title: string;
-};
+const Fridge_Pantry: React.FC = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [fridgeItems, setFridgeItems] = useState([
+    { name: 'Large eggs', amount: '3 (5.82oz)' },
+  ]);
+  const [pantryItems, setPantryItems] = useState([
+    { name: 'Yeast', amount: '1 oz' },
+  ]);
 
-const ListItem: React.FC<ListItemProps> = ({ title }) => (
-  <View style={styles.listItem}>
-    <TouchableOpacity style={styles.iconButton}>
-      <Icon name="favorite-border" size={24} color="#6B21A8" />
-    </TouchableOpacity>
-    <Text style={styles.listText}>{title}</Text>
-    <RNPickerSelect
-      onValueChange={(value) => console.log(value)}
-      items={[
-        { label: 'Stocks', value: 'stocks' },
-        { label: 'Other', value: 'other' },
-      ]}
-      style={pickerSelectStyles}
-      placeholder={{ label: 'Select...', value: null }}
-    />
-    <TouchableOpacity style={styles.addButton}>
-      <Text style={styles.addButtonText}>Add</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.moreButton}>
-      <Icon name="more-vert" size={24} color="black" />
-    </TouchableOpacity>
-  </View>
-);
+  useEffect(() => {
+    if (route.params?.newIngredient) {
+      const { newIngredient } = route.params;
+      setFridgeItems((prevItems) => [...prevItems, newIngredient]);
+    }
+  }, [route.params?.newIngredient]);
 
-const FridgeAndPantryScreen: React.FC = () => {
-  const data = Array(5).fill({ title: 'List item' });
+  const deleteFridgeItem = (index: number) => {
+    setFridgeItems((prevItems) => prevItems.filter((_, i) => i !== index));
+  };
+
+  const deletePantryItem = (index: number) => {
+    setPantryItems((prevItems) => prevItems.filter((_, i) => i !== index));
+  };
 
   return (
     <View style={styles.container}>
-      {/* Fridge Section */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Fridge</Text>
-        <Icon name="kitchen" size={24} color="black" />
-      </View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <ListItem title={item.title} />}
-        keyExtractor={(_, index) => index.toString()}
-        style={styles.listContainer}
-      />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Fridge</Text>
+          {fridgeItems.map((item, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.column}>{item.name}</Text>
+              <Text style={styles.column}>{item.amount}</Text>
+              <TouchableOpacity onPress={() => deleteFridgeItem(index)} style={styles.iconButton}>
+                <MaterialIcons name="delete" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+          ))}
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('Add_Ingredient')}>
+            <Text style={styles.addButtonText}>Add</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Pantry Section */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Pantry</Text>
-        <Icon name="emoji-food-beverage" size={24} color="black" />
-      </View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <ListItem title={item.title} />}
-        keyExtractor={(_, index) => index.toString()}
-        style={styles.listContainer}
-      />
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Pantry</Text>
+          {pantryItems.map((item, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.column}>{item.name}</Text>
+              <Text style={styles.column}>{item.amount}</Text>
+              <TouchableOpacity onPress={() => deletePantryItem(index)} style={styles.iconButton}>
+                <MaterialIcons name="delete" size={24} color="red" />
+              </TouchableOpacity>
+            </View>
+          ))}
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('Add_Ingredient')}>
+            <Text style={styles.addButtonText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {['Home', 'Pantry', 'Meals', 'Recipes', 'AIChat', 'Profile'].map((tab) => (
-          <TouchableOpacity key={tab} style={styles.navItem}>
+          <TouchableOpacity
+            key={tab}
+            style={styles.navItem}
+            onPress={() => {
+              if(tab == "Home"){
+                navigation.navigate("homepage");
+              }
+              else if(tab == "Meals"){
+                navigation.navigate("mealplanpage")
+              }
+              else{navigation.navigate(tab)}
+              }}
+          >
             <Text style={styles.navText}>{tab}</Text>
           </TouchableOpacity>
         ))}
@@ -77,87 +92,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  sectionHeader: {
-    flexDirection: 'row',
+  scrollContent: {
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#F97316',
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  sectionContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
-    marginRight: 5,
+    color: '#ff870a',
+    marginVertical: 10,
+    textAlign: 'center',
   },
-  listContainer: {
-    padding: 10,
-  },
-  listItem: {
+  row: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#F3F4F6',
-    marginBottom: 8,
-    borderRadius: 8,
+    width: '80%',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  column: {
+    fontSize: 16,
+    textAlign: 'center',
+    width: '40%',
   },
   iconButton: {
-    marginRight: 10,
-  },
-  listText: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
+    paddingHorizontal: 5,
   },
   addButton: {
-    backgroundColor: '#000',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    marginHorizontal: 10,
+    backgroundColor: '#ff870a',
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+    width: '80%',
   },
   addButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
-  },
-  moreButton: {
-    padding: 6,
+    fontSize: 16,
+    textAlign: 'center',
   },
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 12,
-    backgroundColor: '#FFEDD5',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+    paddingVertical: 10,
+    backgroundColor: '#f8f8f8',
   },
   navItem: {
     alignItems: 'center',
+    flex: 1,
   },
   navText: {
-    color: '#000',
+    fontSize: 14,
+    color: '#ff870a',
   },
 });
 
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-});
-
-export default FridgeAndPantryScreen;
+export default Fridge_Pantry;
