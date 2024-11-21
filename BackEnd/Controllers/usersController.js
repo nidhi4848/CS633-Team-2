@@ -68,12 +68,20 @@ const loginUser = async (req, res) => {
         //Create a JWT Token
         const token = createToken(user._id);
 
-        res.status(200).json({ email, token }); 
+        res.status(200).json({ firstName: user.firstName, lastName: user.lastName, email, token }); 
     }
     catch(error){
-        console.log(err);
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
 }
 
-export {registerUser, loginUser};
+
+/*****************************************Get User Info *****************************************/
+//get user info
+const getUserInfo = async (req, res) => {
+    const user = await User.findById(req.user._id);
+    res.json(user);
+}
+
+export {registerUser, loginUser, getUserInfo};
