@@ -1,105 +1,75 @@
 import mongoose from 'mongoose';
 import Fridge from '../models/FridgeModel.js';
 import User from '../models/UserModel.js';
+import Ingredient from '../models/IngredientModel.js';  // Import the Ingredient model
 
-/**********************************************Get All Posts *********************************************/
+/********************************************** Get All Fridge Items *********************************************/
 const getFridgeFromUser = async (req, res) => {
-    try{
-        //go to the user model and get the fridge Id
+    try {
+        // Go to the user model and get the fridge Id
         const user = await User.findById(req.user._id);
-        const fridge = await Fridge.findById(user.fridge);
+        const fridge = await Fridge.findById(user.fridge).populate('ingredients');
         res.status(200).json(fridge);
-    }
-    catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message });
     }
 }
 
-/**********************************************Create New Fridge *******************************************/
-const addFridgeToUser = async (req, res) => {
+/********************************************** Add Ingredient to Fridge *********************************************/
+// Adding ingredient to a fridge
+const addIngredientToFridge = async (req, res) => {
+    try {
+        // Find user and their fridge
+        const user = await User.findById(req.user._id);
+        const fridge = await Fridge.findById(user.fridge);
+        
+        // Create new ingredient
+        const newIngredient = new Ingredient({
+            foodName: req.body.foodName,
+            quantity: req.body.quantity,
+            calories: req.body.calories,
+        });
+        
+        // Save the new ingredient
+        await newIngredient.save();
+        
+        // Add the ingredient ObjectId to fridge's ingredients array
+        fridge.ingredients.push(newIngredient._id);  
+        await fridge.save();
 
-    //Grab the authenticated user from the request body
-    const user = await User.findById(req.user._id);
-
-    try{
-        const fridge = await Fridge.create({user: user._id, ingredients: []});
-        user.fridge = fridge._id;
-        await user.save();
-
-        res.status(200).json({ success: 'Fridge Created.', fridge });
-    }
-    catch(error){
+        res.status(200).json(fridge);
+    } catch (error) {
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
-    
 }
 
-// /**********************************************Create New Post *******************************************/
-// const deletePost = async (req, res) => {
+/********************************************** Delete Ingredient from Fridge *********************************************/
+// Deleting ingredient from fridge
+const deleteIngredientFromFridge = async (req, res) => {
+    try {
+        // Go to the user model and get the fridge Id
+        const user = await User.findById(req.user._id);
+        const fridge = await Fridge.findById(user.fridge);
+        
+        // Ensure the ingredient to delete is passed as an ObjectId
+        const ingredientId = req.body.ingredientId; // Make sure the request has an `ingredientId`
 
-//     //Check if the ID is Valid
-//     if(!mongoose, Types.ObjectId.isValid(req.params.id)){
-//         return res.status(400).json({ error: 'Invalid ID' });
-//     }
+        if (!ingredientId) {
+            return res.status(400).json({ error: 'Ingredient ID is required' });
+        }
 
-//     //Check if the Post Exists
-//     const post = await Post.findById(req.params.id);
-//     if(!post){
-//         return res.status(404).json({ error: 'Post Not Found' });
-//     }
+        // Remove the ingredient from the fridge by pulling its ObjectId
+        fridge.ingredients.pull(ingredientId);  // Use the ingredient's ObjectId for deletion
+        
+        // Save the updated fridge
+        await fridge.save();
+        res.status(200).json(fridge);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message });
+    }
+}
 
-//     //Check if the User is the Owner of the Post
-//     const user = await User.findById(req.user._id);
-//     if(!post.user.equals(user._id)){
-//         return res.status(401).json({ error: 'Unauthorized' });
-//     }
-
-//     try{
-//         await post.remove();
-//         res.status(200).json({ success: 'Post Deleted' });
-//     }
-//     catch(error){
-//         console.log(error);
-//         res.status(500).json({ error: error.message });
-//     }
-// }
-
-// /**********************************************Update Post *******************************************/
-// const updatePost = async (req, res) => {
-
-//     //Grab Data from the Request Body
-//     const {title, body} = req.body;
-
-//     //Check the fields are not empty
-//     if(!title || !body){
-//         return res.status(400).json({ msg: 'All fields are required' });
-//     }
-
-//     //Check if the ID is Valid
-//     if(!mongoose, Types.ObjectId.isValid(req.params.id)){
-//         return res.status(400).json({ error: 'Invalid ID' });
-//     }
-
-//     //Check if the Post Exists
-//     const post = await Post.findById(req.params.id);
-//     if(!post){
-//         return res.status(404).json({ error: 'Post Not Found' });
-//     }
-
-//     //Check if the User is the Owner of the Post
-//     const user = await User.findById(req.user._id);
-//     if(!post.user.equals(user._id)){
-//         return res.status(401).json({ error: 'Unauthorized' });
-//     }
-
-//     try{
-//         await post.updateOne({title, body})
-//         res.status(200).json({ success: 'Post Updated' });
-//     }
-//     catch(error){
-//         res.status(500).json({ error: error.message });
-//     }
-// }
-
-export {getFridgeFromUser, addFridgeToUser};
+export { getFridgeFromUser, addIngredientToFridge, deleteIngredientFromFridge };

@@ -1,7 +1,7 @@
-// fridgeSchema.js
+// pantrySchema.js
 import mongoose from 'mongoose';
 
-const FridgeSchema = new mongoose.Schema({
+const PantrySchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -13,6 +13,6 @@ const FridgeSchema = new mongoose.Schema({
     }],
 }, { timestamps: true });
 
-const Fridge = mongoose.model('Fridge', FridgeSchema);
+const Pantry = mongoose.model('Pantry', PantrySchema);
 
-export default Fridge;
+export default Pantry;

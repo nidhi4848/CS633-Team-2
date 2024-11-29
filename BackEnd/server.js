@@ -3,6 +3,7 @@ import { postRoutes } from './routes/postRoutes.js';
 import { userRoutes } from './routes/userRoutes.js';
 import { searchRoutes } from './routes/searchRoutes.js';
 import { fridgeRoutes } from './routes/fridgeRoutes.js';
+import { pantryRoutes } from './routes/pantryRoutes.js';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
@@ -16,6 +17,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/fridge', fridgeRoutes);
+app.use('/api/pantry', pantryRoutes);
 
 mongoose.connect('mongodb+srv://sergiok:Ivyleague123@cluster0.yqwum.mongodb.net', { dbName: 'demo_db' }).then(() => {
     console.log('Connected to MongoDB');

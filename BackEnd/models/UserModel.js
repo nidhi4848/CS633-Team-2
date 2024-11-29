@@ -20,7 +20,13 @@ const UserSchema = new mongoose.Schema({
     },
     fridge: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Fridge'
+        ref: 'Fridge',
+        required: true
+    },
+    pantry: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pantry',
+        required: true
     }
 }, { timestamps: true });
 

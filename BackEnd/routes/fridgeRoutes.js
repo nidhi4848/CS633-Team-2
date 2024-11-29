@@ -1,5 +1,5 @@
 import express from 'express';
-import { addFridgeToUser, getFridgeFromUser } from '../Controllers/fridgeController.js';
+import {getFridgeFromUser, addIngredientToFridge, deleteIngredientFromFridge } from '../Controllers/fridgeController.js';
 import auth from '../Middlewares/auth.js';
 
 const router = express.Router();
@@ -8,7 +8,10 @@ const router = express.Router();
 //Get Fridge from specific user Route
 router.get('/', auth, getFridgeFromUser);
 
-//Add a new Fridge to a User Route
-router.post('/', auth, addFridgeToUser);
+//Add Ingredient to Fridge Route
+router.post('/addIngredient', auth, addIngredientToFridge);
+
+//Delete Ingredient from Fridge Route
+router.post('/deleteIngredient', auth, deleteIngredientFromFridge);
 
 export {router as fridgeRoutes};

@@ -1,4 +1,7 @@
 import User from '../models/UserModel.js';
+import Fridge from '../models/FridgeModel.js';
+import Pantry from '../models/PantryModel.js';
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import 'dotenv/config.js';
 import jwt from 'jsonwebtoken';
@@ -10,36 +13,65 @@ const createToken = (_id) => {
 
 /*****************************************Register User *****************************************/
 const registerUser = async (req, res) => {
-    //Grab Data from the Request Body
-    const {firstName, lastName, email, password} = req.body;
+    // Grab Data from the Request Body
+    const { firstName, lastName, email, password } = req.body;
 
-    //Check the fields are not empty
-    if(!email || !password || !firstName || !lastName){
+    // Check if all fields are provided
+    if (!email || !password || !firstName || !lastName) {
         return res.status(400).json({ msg: 'All fields are required' });
     }
 
-    //Check if user email already exists
+    // Check if the email already exists
     const exist = await User.findOne({ email });
-    if(exist){
+    if (exist) {
         return res.status(400).json({ error: 'Email is already taken' });
     }
 
-    //Hash the Password
+    // Hash the password before saving it
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    try{
-        //Register the User
-        const user = await User.create({firstName, lastName,email, password: hashedPassword});
-        //Create a JWT Token
+    try {
+        // Create empty Fridge with a default "placeholder" user reference (temporary)
+        const fridge = await Fridge.create({
+            user: new mongoose.Types.ObjectId(),  // Temporarily assign a placeholder ObjectId
+            ingredients: [] // Empty ingredients array for now
+        });
+
+        // Create empty Pantry with a default "placeholder" user reference (temporary)
+        const pantry = await Pantry.create({
+            user: new mongoose.Types.ObjectId(),  // Temporarily assign a placeholder ObjectId
+            ingredients: [] // Empty ingredients array for now
+        });
+
+        // Create the User and associate the Fridge and Pantry
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            fridge: fridge._id,
+            pantry: pantry._id
+        });
+
+        // Now, update Fridge and Pantry with the actual user reference
+        await Fridge.findByIdAndUpdate(fridge._id, { user: user._id });
+        await Pantry.findByIdAndUpdate(pantry._id, { user: user._id });
+
+        // Create a JWT Token for the user
         const token = createToken(user._id);
-        //Send the Token in the Response
-        res.status(200).json({ email, token }); 
-    }
-    catch(error){
+
+        // Send the response with the user's email and the JWT token
+        res.status(200).json({ email, token });
+
+    } catch (error) {
+        // Handle any errors during the process
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
 }
+
+
 
 
 /*****************************************Login User *****************************************/
