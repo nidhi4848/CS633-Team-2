@@ -1,8 +1,8 @@
 import CONFIG from '../config.js';
 
-// Get Fridge Items for the User
-const getUserFridge = async (token) => {
-    const res = await fetch(`${CONFIG.BASE_URL}/api/fridge`, {
+// Get Pantry Items for the User
+const getUserPantry = async (token) => {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/pantry`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -19,9 +19,9 @@ const getUserFridge = async (token) => {
     return data;
 }
 
-// Add Ingredient to the User's Fridge
-const addItemToFridge = async (item, token) => {
-    const res = await fetch(`${CONFIG.BASE_URL}/api/fridge/addIngredient`, {
+// Add Ingredient to the User's Pantry
+const addItemToPantry = async (item, token) => {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/pantry/addIngredient`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -43,9 +43,9 @@ const addItemToFridge = async (item, token) => {
     return data;
 }
 
-// Delete Ingredient from the User's Fridge
-const deleteFromFridge = async (ingredientId, token) => {
-    const res = await fetch(`${CONFIG.BASE_URL}/api/fridge/deleteIngredient`, {
+// Delete Ingredient from the User's Pantry
+const deleteFromPantry = async (ingredientId, token) => {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/pantry/deleteIngredient`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -65,4 +65,4 @@ const deleteFromFridge = async (ingredientId, token) => {
     return data;
 }
 
-export { getUserFridge, addItemToFridge, deleteFromFridge };
+export { getUserPantry, addItemToPantry, deleteFromPantry };

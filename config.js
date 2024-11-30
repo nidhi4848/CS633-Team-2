@@ -1,5 +1,5 @@
 const CONFIG = {
-    BASE_URL: 'http://localhost:4000',
+    BASE_URL: 'https://cs633-team-2.onrender.com',
 };
 
 export default CONFIG;
