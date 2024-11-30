@@ -1,20 +1,20 @@
 import React from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import useUser from '../hooks/userHook';
 
-
-type HomepageProps = {
-  userName?: string; 
-  userInitials?: string;
-};
-
-const Homepage: React.FC<HomepageProps> = ({ userName = "User", userInitials = "U" }) => {
+const Homepage: React.FC = () => {
   const navigation = useNavigation();
+  const { user } = useUser(); // Use the user data from the hook
+
+  console.log(user);
+
+  const userName = user ? `${user.firstName} ${user.lastName}` : 'User';
+  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : 'U';
 
   return (
     <ImageBackground source={require('../assets/images/background.png')} style={styles.background}>
       <View style={styles.container}>
-
         {/* User Profile Section */}
         <View style={styles.profileContainer}>
           <View style={styles.avatarContainer}>
@@ -42,7 +42,6 @@ const Homepage: React.FC<HomepageProps> = ({ userName = "User", userInitials = "
             <Text style={styles.buttonText}>Experiment with Gemini</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     </ImageBackground>
   );
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#ff870a', 
+    backgroundColor: '#ff870a',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,

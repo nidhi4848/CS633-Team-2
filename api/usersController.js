@@ -1,4 +1,6 @@
-import { BACKEND_URL } from '@env';
+import CONFIG from '../config.js';
+
+console.log(CONFIG.BASE_URL);
 
 const loginUser = async (email, password) => {
     if(!email || !password){
@@ -6,9 +8,8 @@ const loginUser = async (email, password) => {
     }
 
     console.log(1);
-    console.log(BACKEND_URL);
 
-    const res = await fetch(`${BACKEND_URL}/api/users/login`, {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/users/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -31,7 +32,7 @@ const registerUser = async (email, password, firstName, lastName) => {
         throw Error('All fields are required');
     }
 
-    const res = await fetch(`${BACKEND_URL}/api/users/`, {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/users/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ const registerUser = async (email, password, firstName, lastName) => {
 
 
 const getUserInfo = async() => {
-    const res = await fetch(`${BACKEND_URL}/api/users/info`, {
+    const res = await fetch(`${CONFIG.BASE_URL}/api/users/info`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
