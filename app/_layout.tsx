@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 

@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import useUser from '../hooks/userHook';
 
 const Homepage: React.FC = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
   const { user } = useUser(); // Use the user data from the hook
-
-  console.log(user);
 
   const userName = user ? `${user.firstName} ${user.lastName}` : 'User';
   const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : 'U';
 
   return (
-    <ImageBackground source={require('../assets/images/background.png')} style={styles.background}>
+    <ImageBackground
+      source={require('../assets/images/background2.jpg')}
+      style={styles.background}
+      imageStyle={styles.imageStyle}
+    >
       <View style={styles.container}>
         {/* User Profile Section */}
         <View style={styles.profileContainer}>
@@ -26,19 +28,19 @@ const Homepage: React.FC = () => {
 
         {/* Buttons Section */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Fridge_Pantry')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/Fridge_Pantry')}>
             <Text style={styles.buttonText}>Fridge & Pantry</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Meal_Plans')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
             <Text style={styles.buttonText}>Meal Plans</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Recipes')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/recipes')}>
             <Text style={styles.buttonText}>Recipes</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Exp_Gemini')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/experiment-gemini')}>
             <Text style={styles.buttonText}>Experiment with Gemini</Text>
           </TouchableOpacity>
         </View>
@@ -50,13 +52,17 @@ const Homepage: React.FC = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageStyle: {
+    resizeMode: 'cover', // Ensure the image covers the entire screen
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, // Adjust padding to fit content
   },
   profileContainer: {
     alignItems: 'center',
@@ -79,6 +85,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ff870a',
+    textAlign: 'center',
   },
   buttonsContainer: {
     width: '100%',
