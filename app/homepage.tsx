@@ -17,35 +17,33 @@ const Homepage: React.FC = () => {
       style={styles.background}
       imageStyle={styles.imageStyle}
     >
-      <View style={styles.container}>
-        {/* User Profile Section */}
-        <View style={styles.profileContainer}>
-          <View style={styles.avatarContainer}>
-            <Text style={styles.avatarText}>{userInitials}</Text>
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+          {/* User Profile Section */}
+          <View style={styles.profileContainer}>
+            <View style={styles.avatarContainer}>
+              <Text style={styles.avatarText}>{userInitials}</Text>
+            </View>
+            <Text style={styles.welcomeText}>Welcome back, {userName}</Text>
+            <Text style={styles.welcomeText}>What would you like to do today</Text>
           </View>
-          <Text style={styles.welcomeText}>Welcome back, {userName}</Text>
-          <Text style={styles.welcomeText}>What would you like to do today</Text>
+
+          {/* Buttons Section */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/Fridge_Pantry')}>
+              <Text style={styles.buttonText}>Fridge & Pantry</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
+              <Text style={styles.buttonText}>Meal Plans</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/recipes')}>
+              <Text style={styles.buttonText}>Recipes</Text>
+            </TouchableOpacity>
+          </View>
+          <LogoutButton />
         </View>
-
-        {/* Buttons Section */}
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/Fridge_Pantry')}>
-            <Text style={styles.buttonText}>Fridge & Pantry</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
-            <Text style={styles.buttonText}>Meal Plans</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/recipes')}>
-            <Text style={styles.buttonText}>Recipes</Text>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/experiment-gemini')}>
-            <Text style={styles.buttonText}>Experiment with Gemini</Text>
-          </TouchableOpacity> */}
-        </View>
-        <LogoutButton />
       </View>
     </ImageBackground>
   );
@@ -59,6 +57,23 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     resizeMode: 'cover', // Ensure the image covers the entire screen
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  outerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    borderWidth: 2,
+    borderColor: '#ff870a',
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)', // Optional: Light background inside the boundary
+    margin: 20,
   },
   container: {
     flex: 1,
