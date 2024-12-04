@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { loginUser } from '../../api/usersController';
+import useUser from '../../hooks/userHook'; // Update the path as necessary
 import {
   View,
   Text,
@@ -22,6 +23,7 @@ const LoginScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: '', password: '' });
   const navigation = useNavigation();
+  const { saveUser } = useUser();
 
   const validateForm = () => {
     let isValid = true;
@@ -52,18 +54,26 @@ const LoginScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await loginUser(email, password);
-      Alert.alert('Success', 'Login successful!');
+        const userData = await loginUser(email, password); // Assuming this returns the user object
+        if (userData) {
+            saveUser(userData); // Save the user to AsyncStorage and context
+            Alert.alert('Success', 'Login successful!');
+            navigation.navigate('homepage'); // Navigate to homepage
+        } else {
+            Alert.alert('Error', 'Invalid credentials.');
+        }
     } catch (error) {
-      console.log(error);
-      Alert.alert('Error', 'Login failed. Please try again.');
+        console.log(error);
+        Alert.alert('Error', 'Login failed. Please try again.');
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
 
   const handleRegister = () => {
-    router.push('/(Authentication)/RegistrationScreen');
+    //navigate to Registration Screen
+    navigation.navigate('(Authentication)/RegistrationScreen');
   };
 
   return (
