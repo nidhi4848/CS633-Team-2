@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: { 
     flexDirection: 'row', 
-    margin: 10, 
+    marginTop: 50, 
     justifyContent: 'center' 
   },
   searchInput: { 
