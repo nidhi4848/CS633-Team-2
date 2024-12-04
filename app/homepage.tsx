@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import useUser from '../hooks/userHook';
+import LogoutButton from '../components/LogoutButton';
 
 const Homepage: React.FC = () => {
   const router = useRouter();
@@ -32,11 +33,7 @@ const Homepage: React.FC = () => {
             <Text style={styles.buttonText}>Fridge & Pantry</Text>
           </TouchableOpacity>
 
-<<<<<<< HEAD
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('mealplanpage')}>
-=======
           <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
->>>>>>> origin/Fridge
             <Text style={styles.buttonText}>Meal Plans</Text>
           </TouchableOpacity>
 
@@ -44,10 +41,11 @@ const Homepage: React.FC = () => {
             <Text style={styles.buttonText}>Recipes</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/experiment-gemini')}>
+          {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/experiment-gemini')}>
             <Text style={styles.buttonText}>Experiment with Gemini</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
+        <LogoutButton />
       </View>
     </ImageBackground>
   );

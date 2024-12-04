@@ -11,23 +11,23 @@ const MealPlanPage = () => {
       <Text style={styles.subtitle}>Date: {date}</Text>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Breakfast</Text>
-        <Button title="Add Recipe" onPress={() => {}} />
-        <Button title="Add Product" onPress={() => {}} />
+        <Button title="Add Recipe / Product" onPress={() => {}} />
+        {/* <Button title="Add Product" onPress={() => {}} /> */}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Lunch</Text>
-        <Button title="Add Recipe" onPress={() => {}} />
-        <Button title="Add Product" onPress={() => {}} />
+        <Button title="Add Recipe / Product" onPress={() => {}} />
+        {/* <Button title="Add Product" onPress={() => {}} /> */}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Break</Text>
-        <Button title="Add Recipe" onPress={() => {}} />
-        <Button title="Add Product" onPress={() => {}} />
+        <Button title="Add Recipe / Product" onPress={() => {}} />
+        {/* <Button title="Add Product" onPress={() => {}} /> */}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Dinner</Text>
-        <Button title="Add Recipe" onPress={() => {}} />
-        <Button title="Add Product" onPress={() => {}} />
+        <Button title="Add Recipe / Product" onPress={() => {}} />
+        {/* <Button title="Add Product" onPress={() => {}} /> */}
       </View>
     </View>
   );

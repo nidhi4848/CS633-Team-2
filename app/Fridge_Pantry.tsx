@@ -5,6 +5,7 @@ import { searchAllItems, searchOneItem } from '../api/searchController';
 import { getUserFridge, addItemToFridge, deleteFromFridge } from '../api/fridgeController'; // Import fridge API functions
 import { getUserPantry, addItemToPantry, deleteFromPantry } from '../api/pantryController'; // Import pantry API functions
 import useUser from '../hooks/userHook';
+import LogoutButton from '../components/LogoutButton';
 
 const Fridge_Pantry: React.FC = () => {
   const { user } = useUser();
@@ -17,9 +18,8 @@ const Fridge_Pantry: React.FC = () => {
   const [selectedMeasure, setSelectedMeasure] = useState(null);
   const [calories, setCalories] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [targetLocation, setTargetLocation] = useState('fridge'); // 'fridge' or 'pantry'
+  const [targetLocation, setTargetLocation] = useState('fridge');
 
-  // Fetch user's fridge and pantry items when the component mounts
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -114,6 +114,10 @@ const Fridge_Pantry: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Logout Button in Top-Right Corner */}
+      <View style={styles.logoutButtonContainer}>
+        <LogoutButton />
+      </View>
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -200,6 +204,8 @@ const Fridge_Pantry: React.FC = () => {
             </TouchableOpacity>
           ))}
 
+          
+
           <Text style={styles.label}>Enter Quantity:</Text>
           <TextInput
             style={styles.quantityInput}
@@ -239,152 +245,201 @@ const Fridge_Pantry: React.FC = () => {
   </Modal>
 )}
 
+      <View style={styles.bottomNav}>
+        {['Home', 'Pantry', 'Meals', 'Recipes', 'Profile'].map((tab) => (
+          <TouchableOpacity key={tab} style={styles.navItem}>
+            <Text style={styles.navText}>{tab}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff' 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    // justifyContent: 'center', // Centers items vertically
+    // alignItems: 'center', // Centers items horizontally
   },
-  searchContainer: { 
-    flexDirection: 'row', 
-    marginTop: 50, 
-    justifyContent: 'center' 
+  measureOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    width: '100%', 
   },
-  searchInput: { 
-    flex: 1, 
-    borderWidth: 1, 
-    borderColor: '#ccc', 
-    borderRadius: 5, 
-    paddingHorizontal: 10, 
-    paddingVertical: 8 
+  selectedMeasure: {
+    backgroundColor: '#4CAF50',
   },
-  searchButton: { 
-    marginLeft: 10, 
-    paddingVertical: 10, 
-    paddingHorizontal: 20, 
-    backgroundColor: '#ff870a', 
-    borderRadius: 5 
-  },
-  searchButtonText: { 
-    color: '#fff' 
-  },
-  resultItem: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    padding: 10, 
-    borderBottomWidth: 1, 
-    borderBottomColor: '#ccc' 
-  },
-  resultText: { 
-    fontSize: 16, 
-    fontWeight: '500' 
-  },
-  modalBackdrop: {
-    flex: 1, // This ensures the backdrop takes up the full screen
+  searchContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent backdrop
+    marginTop: 20,
+  },
+  searchInput: {
+    width: '80%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    textAlign: 'center',
+  },
+  searchButton: {
+    marginLeft: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#ff870a',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  resultItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Center-aligns icon and text
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  resultText: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  sectionContainer: {
+    padding: 10,
+    alignItems: 'center',
+    width: '90%', 
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+  },
+  column: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '1000px', // Adjust width for the modal container
-    maxHeight: '80%', // Ensure the modal doesn't take more than the screen space
+    alignItems: 'center',
+    width: '90%',
   },
-  scrollView: { 
-    flex: 1, // Ensures the scroll view fills the modal
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
   },
-  scrollContent: { 
-    paddingBottom: 20 // Extra space for smooth scrolling
+  modalSubText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
   },
-  modalTitle: { 
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    marginBottom: 10 
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginVertical: 5,
+    textAlign: 'center',
   },
-  modalSubText: { 
-    fontSize: 14, 
-    marginBottom: 10 
+  quantityInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 8,
+    marginBottom: 10,
+    textAlign: 'center',
+    width: '100%',
   },
-  label: { 
-    fontSize: 16, 
-    fontWeight: '500', 
-    marginVertical: 5 
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginVertical: 10,
   },
-  measureOption: { 
-    padding: 8, 
-    backgroundColor: '#f1f1f1', 
-    marginVertical: 5, 
-    borderRadius: 5 
+  toggleButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#eee',
+    borderRadius: 5,
   },
-  selectedMeasure: { 
-    backgroundColor: '#d0f0d0' 
+  selectedToggleButton: {
+    backgroundColor: '#b2d7d7',
   },
-  quantityInput: { 
-    borderWidth: 1, 
-    padding: 8, 
-    borderColor: '#ccc', 
-    marginBottom: 10, 
-    borderRadius: 5 
+  addButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
   },
-  toggleContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginVertical: 10 
+  addButtonText: {
+    color: '#fff',
+    textAlign: 'center',
   },
-  toggleButton: { 
-    paddingVertical: 10, 
-    paddingHorizontal: 15, 
-    backgroundColor: '#eee', 
-    borderRadius: 5 
+  closeButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#ccc',
+    borderRadius: 5,
+    alignItems: 'center',
   },
-  selectedToggleButton: { 
-    backgroundColor: '#b2d7d7' 
+  closeButtonText: {
+    textAlign: 'center',
   },
-  modalActions: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between' 
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#ff870a',
+    width: '100%',
   },
-  addButton: { 
-    backgroundColor: '#4CAF50', 
-    paddingVertical: 10, 
-    paddingHorizontal: 20, 
-    borderRadius: 5 
+  navItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
-  cancelButton: { 
-    backgroundColor: '#f44336', 
-    paddingVertical: 10, 
-    paddingHorizontal: 20, 
-    borderRadius: 5 
+  navText: {
+    textAlign: 'center',
+    color: '#fff'
   },
-  addButtonText: { 
-    color: '#fff' 
+  logoutButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    zIndex: 10,
   },
-  cancelButtonText: { 
-    color: '#fff' 
-  },
-  sectionContainer: { 
-    padding: 10 
-  },
-  sectionTitle: { 
-    fontSize: 18, 
-    fontWeight: 'bold' 
-  },
-  row: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    paddingVertical: 5,
-    borderBottomWidth: 1,  // Add this line
-    borderBottomColor: 'gray'  // Light gray color, adjust as needed
-  },
-  column: { 
-    flex: 1, 
-    fontSize: 14 
-  }
 });
 
 
