@@ -260,36 +260,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop:20,
+    // paddingBottom: 100,
     // justifyContent: 'center', // Centers items vertically
     // alignItems: 'center', // Centers items horizontally
   },
-  measureOption: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#f1f1f1',
-    borderRadius: 5,
-    marginVertical: 5,
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    width: '100%', 
+  logoutButtonContainer: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    zIndex: 10,
   },
-  selectedMeasure: {
-    backgroundColor: '#4CAF50',
+  logoutButton: {
+    paddingVertical: 10,
+    paddingHorizontal : 20,
+    backgroundColor: "ff870a",
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    textAlign: 'center',
   },
   searchContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Align to the left
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 60,
+    paddingHorizontal: 10, // Add padding if you want some space on the left
   },
   searchInput: {
-    width: '80%',
+    width: '70%', // Adjust the width here (you can use specific pixel values like 250 or a percentage)
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    textAlign: 'center',
+    textAlign: 'left', // Align text to the left
   },
   searchButton: {
     marginLeft: 10,
@@ -434,12 +440,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff'
   },
-  logoutButtonContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    zIndex: 10,
-  },
+  
 });
 
 
