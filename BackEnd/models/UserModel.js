@@ -27,7 +27,12 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Pantry',
         required: true
-    }
+    },
+    days: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Day',
+        required: true
+    }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
