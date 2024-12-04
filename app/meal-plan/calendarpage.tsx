@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, FlatList, Modal } from 'react-native';
+import BottomNav from '@/components/BottomNav';
 
 const CalendarPage = () => {
   const router = useRouter();
@@ -11,6 +12,27 @@ const CalendarPage = () => {
   const handleDateClick = (day) => {
     const formattedDate = day.dateString; // Format is already YYYY-MM-DD
     router.push(`/meal-plan/${formattedDate}`);
+  };
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'Home':
+        router.push('/homepage');
+        break;
+      case 'Pantry':
+        router.push('/Fridge_Pantry');
+        break;
+      case 'Meals':
+        router.push('/meal-plan/calendarpage');
+        break;
+      case 'Recipes':
+        router.push('/recipes');
+        break;
+      case 'Profile':
+        router.push('/ProfilePage');
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -27,13 +49,11 @@ const CalendarPage = () => {
           arrowColor: '#00adf5',
         }}
       />
-      <View style={styles.bottomNav}>
-        {['Home', 'Pantry', 'Meals', 'Recipes','Profile'].map((tab) => (
-          <TouchableOpacity key={tab} style={styles.navItem}>
-            <Text style={styles.navText}>{tab}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* Bottom Navigation */}
+      <BottomNav
+        items={['Home', 'Pantry', 'Meals', 'Recipes', 'Profile']}
+        onNavigate={handleNavigation}
+      />
     </View>
   );
 };
@@ -52,24 +72,7 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
   },
-  bottomNav: {
-    
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center', 
-    paddingVertical: 12,
-    backgroundColor: '#ff870a',
-    width: '100%',
-    color: '#fff',
-  },
-  navItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  navText: {
-    textAlign: 'center',
-    color: "#fff",
-  },
+
 });
 
 export default CalendarPage;

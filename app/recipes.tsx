@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button } from 'react-native';
+import BottomNav from '@/components/BottomNav';
+import { useRouter } from 'expo-router';
 
 const recipesData = [
   { id: '1', title: 'Oat Milk Fettuccine Recipe by Tasty' },
@@ -11,6 +13,7 @@ const recipesData = [
 ];
 
 const Recipes: React.FC = () => {
+  const router = useRouter();
   const handleSelectIngredients = () => {
     // Logic for selecting ingredients can go here
     console.log('Select Ingredients button pressed');
@@ -21,6 +24,28 @@ const Recipes: React.FC = () => {
       <Text style={styles.cardText}>{item.title}</Text>
     </TouchableOpacity>
   );
+
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'Home':
+        router.push('/homepage');
+        break;
+      case 'Pantry':
+        router.push('/Fridge_Pantry');
+        break;
+      case 'Meals':
+        router.push('/meal-plan/calendarpage');
+        break;
+      case 'Recipes':
+        router.push('/recipes');
+        break;
+      case 'Profile':
+        router.push('/ProfilePage');
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -48,6 +73,11 @@ const Recipes: React.FC = () => {
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+      />
+      {/* Bottom Navigation */}
+      <BottomNav
+        items={['Home', 'Pantry', 'Meals', 'Recipes', 'Profile']}
+        onNavigate={handleNavigation}
       />
     </View>
   );
