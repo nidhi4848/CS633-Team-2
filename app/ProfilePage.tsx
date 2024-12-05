@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Modal,
-  TextInput,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Modal, TextInput, SafeAreaView } from 'react-native';
 import useUser from '../hooks/userHook';
 import { useRouter } from 'expo-router';
+import BottomNav from '@/components/BottomNav'; // Import BottomNav
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
@@ -56,6 +48,28 @@ const ProfilePage: React.FC = () => {
     // Add logic to update the password
     Alert.alert('Success', 'Password updated successfully!');
     setModalVisible(false);
+  };
+
+  const handleNavigation = (tab) => {
+    switch (tab) {
+      case 'Home':
+        router.push('/homepage');
+        break;
+      case 'Pantry':
+        router.push('/Fridge_Pantry');
+        break;
+      case 'Meals':
+        router.push('/meal-plan/calendarpage');
+        break;
+      case 'Recipes':
+        router.push('/recipes');
+        break;
+      case 'Profile':
+        router.push('/ProfilePage');
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -126,6 +140,14 @@ const ProfilePage: React.FC = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNavContainer}>
+        <BottomNav
+          items={['Home', 'Pantry', 'Meals', 'Recipes', 'Profile']}
+          onNavigate={handleNavigation}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -227,6 +249,12 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  bottomNavContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 
