@@ -1,0 +1,30 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES6",
+    "module": "ESNext",
+    "jsx": "react",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+    "baseUrl": "./", // Enables absolute imports from the root directory
+    "allowSyntheticDefaultImports": true, // Allows default imports even when not explicitly defined
+    "esModuleInterop": true, // Ensures compatibility with CommonJS modules
+    "skipLibCheck": true // Skips type checking for library declaration files
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules", // Excludes node_modules from being compiled
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
+}
