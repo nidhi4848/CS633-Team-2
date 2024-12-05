@@ -8,6 +8,7 @@ import useUser from '../hooks/userHook';
 import LogoutButton from '../components/LogoutButton';
 import BottomNav from '@/components/BottomNav';
 import { useRouter } from 'expo-router';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const Fridge_Pantry: React.FC = () => {
   const router = useRouter()
@@ -23,7 +24,6 @@ const Fridge_Pantry: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [targetLocation, setTargetLocation] = useState('fridge');
   const [isEditing, setIsEditing] = useState(false);
-const [editItem, setEditItem] = useState(null); 
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -49,41 +49,17 @@ const [editItem, setEditItem] = useState(null);
     setSearchResults(results);
   };
 
-  const handleEditItem = (item) => {
-  setEditItem(item);
-  setQuantity(parseFloat(item.quantity.split(" ")[0]) || 1); // Extract quantity from "5 kg" format
-  setSelectedMeasure({ measure: "custom", serving_weight: 1 }); // Add default for custom measure
-  setCalories(parseFloat(item.calories));
-  setIsEditing(true); // Open editing modal
-};
-
-const handleSaveEdit = async () => {
-  try {
-    const updatedItem = {
-      ...editItem,
-      quantity: `${quantity} ${selectedMeasure.measure || ''}`,
-      calories: calories.toFixed(2),
-    };
-
-    // Update in the database
-    if (editItem.location === 'fridge') {
-      await addItemToFridge(updatedItem, user.token); // Replace existing item logic
-      setFridgeItems((prevItems) =>
-        prevItems.map((item) => (item._id === updatedItem._id ? updatedItem : item))
-      );
-    } else {
-      await addItemToPantry(updatedItem, user.token); // Replace existing item logic
-      setPantryItems((prevItems) =>
-        prevItems.map((item) => (item._id === updatedItem._id ? updatedItem : item))
-      );
-    }
-
-    setIsEditing(false);
-    setEditItem(null);
-  } catch (error) {
-    console.error("Error saving changes:", error);
-  }
-};
+  
+  const handleCopyContents = () => {
+    const fridgeData = fridgeItems.map(item => `${item.foodName}: ${item.quantity}, ${item.calories} kcal`).join('\n');
+    const pantryData = pantryItems.map(item => `${item.foodName}: ${item.quantity}, ${item.calories} kcal`).join('\n');
+  
+    const combinedData = `Fridge:\n${fridgeData}\n\nPantry:\n${pantryData}`;
+    
+    Clipboard.setString(combinedData);
+    alert('Contents copied to clipboard!');
+  };  
+  
 
   const handleSelectItem = async (item) => {
     const details = await searchOneItem(item.name);
@@ -193,6 +169,7 @@ const handleSaveEdit = async () => {
           <Text style={styles.searchButtonText}>Search</Text>
         </TouchableOpacity>
       </View>
+
 
       {/* Search Results */}
       {searchQuery.trim() !== '' && searchResults.length > 0 && (
@@ -311,44 +288,12 @@ const handleSaveEdit = async () => {
   </View>
 </Modal>
 )}
-{isEditing && (
-  <Modal
-    visible={isEditing}
-    animationType="slide"
-    transparent={true}
-  >
-    <View style={styles.modalBackdrop}>
-      <View style={styles.modalContainer}>
-        <Text style={styles.modalTitle}>Edit Ingredient</Text>
-        <Text style={styles.modalSubText}>{editItem?.foodName}</Text>
 
-        <Text style={styles.label}>Enter Quantity:</Text>
-        <TextInput
-          style={styles.quantityInput}
-          keyboardType="numeric"
-          value={quantity.toString()}
-          onChangeText={handleQuantityChange}
-        />
 
-        <Text style={styles.label}>Calories:</Text>
-        <TextInput
-          style={styles.quantityInput}
-          keyboardType="numeric"
-          value={calories.toFixed(2)}
-          onChangeText={(value) => setCalories(parseFloat(value) || 0)}
-        />
-
-        <TouchableOpacity style={styles.addButton} onPress={handleSaveEdit}>
-          <Text style={styles.addButtonText}>Save Changes</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.closeButton} onPress={() => setIsEditing(false)}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </Modal>
-)}
+      {/* Copy Contents Button */}
+      <TouchableOpacity style={styles.copyButton} onPress={handleCopyContents}>
+        <Text style={styles.copyButtonText}>Copy Contents</Text>
+      </TouchableOpacity>
 
       {/* Bottom Navigation */}
       <BottomNav
@@ -599,19 +544,21 @@ const styles = StyleSheet.create({
   selectedMeasure: {
     backgroundColor: '#4CAF50',
   },
-  // modalContainer: {
-  //   backgroundColor: 'white',
-  //   padding: 20,
-  //   borderRadius: 10,
-  //   width: '90%',
-  //   alignItems: 'center',
-  // },
-  // modalBackdrop: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  // },
+  copyButton: {
+    backgroundColor: '#ff870a',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  copyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  
   
 });
 
