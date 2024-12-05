@@ -21,11 +21,14 @@ const Homepage: React.FC = () => {
         <View style={styles.container}>
           {/* User Profile Section */}
           <View style={styles.profileContainer}>
-            <View style={styles.avatarContainer}>
+            <TouchableOpacity
+              style={styles.avatarContainer}
+              onPress={() => router.push('/ProfilePage')} // Navigate to ProfilePage
+            >
               <Text style={styles.avatarText}>{userInitials}</Text>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.welcomeText}>Welcome back, {userName}</Text>
-            <Text style={styles.welcomeText}>What would you like to do today</Text>
+            <Text style={styles.welcomeText}>What would you like to do today?</Text>
           </View>
 
           {/* Buttons Section */}
@@ -57,12 +60,6 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     resizeMode: 'cover', // Ensure the image covers the entire screen
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   outerContainer: {
     flex: 1,
