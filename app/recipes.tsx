@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import BottomNav from '@/components/BottomNav';
 import { useRouter } from 'expo-router';
+import LogoutButton from '@/components/LogoutButton'; // Import the LogoutButton component
 
 const recipesData = [
   { id: '1', title: 'Oat Milk Fettuccine Recipe by Tasty' },
@@ -52,6 +53,7 @@ const Recipes: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Recipes</Text>
+        <LogoutButton /> {/* Add LogoutButton in the header */}
       </View>
 
       {/* Select Ingredients Button */}
@@ -93,6 +95,9 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     elevation: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerText: {
     fontSize: 24,
