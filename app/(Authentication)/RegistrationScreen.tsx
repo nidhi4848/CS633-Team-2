@@ -12,13 +12,18 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { router } from 'expo-router';
+import { registerUser } from '@/api/usersController';
 
 const RegistrationScreen: React.FC = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -27,10 +32,24 @@ const RegistrationScreen: React.FC = () => {
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
     };
+
+    // First name validation
+    if (!firstName) {
+      newErrors.firstName = 'First name is required';
+      isValid = false;
+    }
+
+    // Last name validation
+    if (!lastName) {
+      newErrors.lastName = 'Last name is required';
+      isValid = false;
+    }
 
     // Email validation
     if (!email) {
@@ -68,12 +87,11 @@ const RegistrationScreen: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await registerUser(email,password, firstName, lastName);
       Alert.alert('Success', 'Registration successful!', [
         {
           text: 'OK',
-          onPress: () => router.push({ pathname: '/LoginScreen'})
+          onPress: () => router.push({ pathname: '/LoginScreen' })
         },
       ]);
     } catch (error) {
@@ -84,7 +102,7 @@ const RegistrationScreen: React.FC = () => {
   };
 
   const handleLogin = () => {
-    router.push({ pathname: '/LoginScreen'});
+    router.push({ pathname: '/LoginScreen' });
   };
 
   return (
@@ -98,6 +116,32 @@ const RegistrationScreen: React.FC = () => {
           <Text style={styles.subtitle}>Sign up to get started</Text>
 
           <View style={styles.inputContainer}>
+            <Text style={styles.label}>First Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your first name"
+              value={firstName}
+              onChangeText={(text) => {
+                setFirstName(text);
+                setErrors(prev => ({ ...prev, firstName: '' }));
+              }}
+              placeholderTextColor="#666"
+            />
+            {errors.firstName ? <Text style={styles.errorText}>{errors.firstName}</Text> : null}
+
+            <Text style={styles.label}>Last Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your last name"
+              value={lastName}
+              onChangeText={(text) => {
+                setLastName(text);
+                setErrors(prev => ({ ...prev, lastName: '' }));
+              }}
+              placeholderTextColor="#666"
+            />
+            {errors.lastName ? <Text style={styles.errorText}>{errors.lastName}</Text> : null}
+
             <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}

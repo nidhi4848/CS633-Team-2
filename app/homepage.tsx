@@ -1,48 +1,52 @@
 import React from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
+import useUser from '../hooks/userHook';
+import LogoutButton from '../components/LogoutButton';
 
+const Homepage: React.FC = () => {
+  const router = useRouter();
+  const { user } = useUser(); // Use the user data from the hook
 
-type HomepageProps = {
-  userName?: string; 
-  userInitials?: string;
-};
-
-const Homepage: React.FC<HomepageProps> = ({ userName = "User", userInitials = "U" }) => {
-  const navigation = useNavigation();
+  const userName = user ? `${user.firstName} ${user.lastName}` : 'User';
+  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : 'U';
 
   return (
-    <ImageBackground source={require('../assets/images/background.png')} style={styles.background}>
-      <View style={styles.container}>
-
-        {/* User Profile Section */}
-        <View style={styles.profileContainer}>
-          <View style={styles.avatarContainer}>
-            <Text style={styles.avatarText}>{userInitials}</Text>
+    <ImageBackground
+      source={require('../assets/images/background2.jpg')}
+      style={styles.background}
+      imageStyle={styles.imageStyle}
+    >
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+          {/* User Profile Section */}
+          <View style={styles.profileContainer}>
+            <TouchableOpacity
+              style={styles.avatarContainer}
+              onPress={() => router.push('/ProfilePage')} // Navigate to ProfilePage
+            >
+              <Text style={styles.avatarText}>{userInitials}</Text>
+            </TouchableOpacity>
+            <Text style={styles.welcomeText}>Welcome back, {userName}</Text>
+            <Text style={styles.welcomeText}>What would you like to do today?</Text>
           </View>
-          <Text style={styles.welcomeText}>Welcome back, {userName}</Text>
-          <Text style={styles.welcomeText}>What would you like to do today</Text>
+
+          {/* Buttons Section */}
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/Fridge_Pantry')}>
+              <Text style={styles.buttonText}>Fridge & Pantry</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
+              <Text style={styles.buttonText}>Meal Plans</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/recipes')}>
+              <Text style={styles.buttonText}>Recipes</Text>
+            </TouchableOpacity>
+          </View>
+          <LogoutButton />
         </View>
-
-        {/* Buttons Section */}
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Fridge_Pantry')}>
-            <Text style={styles.buttonText}>Fridge & Pantry</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('mealplanpage')}>
-            <Text style={styles.buttonText}>Meal Plans</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Recipes')}>
-            <Text style={styles.buttonText}>Recipes</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Exp_Gemini')}>
-            <Text style={styles.buttonText}>Experiment with Gemini</Text>
-          </TouchableOpacity>
-        </View>
-
       </View>
     </ImageBackground>
   );
@@ -51,13 +55,28 @@ const Homepage: React.FC<HomepageProps> = ({ userName = "User", userInitials = "
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageStyle: {
+    resizeMode: 'cover', // Ensure the image covers the entire screen
+  },
+  outerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    borderWidth: 2,
+    borderColor: '#ff870a',
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)', // Optional: Light background inside the boundary
+    margin: 20,
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, // Adjust padding to fit content
   },
   profileContainer: {
     alignItems: 'center',
@@ -67,7 +86,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#ff870a', 
+    backgroundColor: '#ff870a',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
@@ -80,6 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#ff870a',
+    textAlign: 'center',
   },
   buttonsContainer: {
     width: '100%',
