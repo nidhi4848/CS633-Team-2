@@ -10,8 +10,7 @@ const DaySchema = new mongoose.Schema({
     //date format YYYY-MM-DD
     date: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     breakfast: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -55,7 +55,7 @@ const addMealToDay = async (req, res) => {
         }
 
         // Find the Day document
-        let day = await Day.findOne({ user: user._id, date: date });
+        let day = await Day.findOne({ user: user._id, date: date }).populate('breakfast lunch dinner');
         if (!day) {
             // If the day doesn't exist, create it
             day = new Day({ user: user._id, date: date });
@@ -70,11 +70,18 @@ const addMealToDay = async (req, res) => {
         day[mealType].push(meal._id);
         await day.save();
 
+        // Populate the newly added meal in the response
+        await day.populate('breakfast lunch dinner');
+
         res.status(200).json({ message: `Meal added to ${mealType}`, day });
+
+        // Log the response
+        console.log({ message: `Meal added to ${mealType}`, day });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 export { checkIfDayAvailable, addMealToDay };
