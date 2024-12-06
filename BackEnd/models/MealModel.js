@@ -5,6 +5,10 @@ const MealSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    calories: {
+        type: String,
+        required: true
+    },
     ingredients: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Ingredient',
