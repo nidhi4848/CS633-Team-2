@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, ScrollView, Picker } from 'react-native';
 import BottomNav from '@/components/BottomNav'; // Assuming you have a BottomNav component
 import { useRouter } from 'expo-router';
+import LogoutButton from '@/components/LogoutButton'; // Import the LogoutButton component
 
 const measurementOptions = ['grams', 'ml', 'cups', 'tablespoons', 'teaspoons', 'pieces'];
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Modal, TextInput, SafeAreaView } from 'react-native';
-import useUser from '../hooks/userHook';
+import useUser from '../hooks/userHook'; // Ensure clearUser is part of the hook
 import { useRouter } from 'expo-router';
-import BottomNav from '@/components/BottomNav'; // Import BottomNav
+import BottomNav from '@/components/BottomNav';
 
 const ProfilePage: React.FC = () => {
   const router = useRouter();
@@ -16,27 +16,20 @@ const ProfilePage: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Confirm Logout',
-      'Are you sure you want to log out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: () => {
-            clearUser();
-            router.replace('/LoginScreen'); // Navigate back to the login screen
-          },
-        },
-      ],
-      { cancelable: true }
-    );
+  const handleLogout = async () => {
+    try {
+      // Clear user data (this may involve updating context, state, or storage)
+      clearUser(); // This should be handling the clearing of user data
+
+      // Navigate to Login screen
+      router.replace('/LoginScreen');
+    } catch (error) {
+      Alert.alert('Error', 'There was an issue logging you out. Please try again.');
+    }
   };
 
   const handleEditProfile = () => {
-    router.push('/EditProfile'); // Navigate to EditProfile screen
+    router.push('/EditProfile');
   };
 
   const handleSavePassword = () => {
