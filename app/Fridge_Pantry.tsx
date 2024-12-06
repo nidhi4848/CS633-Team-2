@@ -63,6 +63,7 @@ const Fridge_Pantry: React.FC = () => {
 
   const handleSelectItem = async (item) => {
     const details = await searchOneItem(item.name);
+    console.log("Selected Item111: ", details[0]);
     if (details.length > 0) {
       setSelectedItem(details[0]);
       setSelectedMeasure(details[0].altMeasures[0]);
@@ -70,6 +71,8 @@ const Fridge_Pantry: React.FC = () => {
       setCalories(details[0].calories);
       setModalVisible(true);
     }
+
+    console.log("Selected Item: ", details[0]);
   };
 
   const handleAddItem = async () => {
@@ -190,8 +193,6 @@ const Fridge_Pantry: React.FC = () => {
         </View>
       )}
 
-
-
       {/* Fridge Items */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.sectionContainer}>
@@ -226,6 +227,7 @@ const Fridge_Pantry: React.FC = () => {
 
 {selectedItem && (
   <Modal
+
   visible={modalVisible}
   animationType="slide"
   transparent={true}
@@ -250,6 +252,7 @@ const Fridge_Pantry: React.FC = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
 
       <Text style={styles.label}>Enter Quantity:</Text>
       <TextInput
