@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { View, Text, StyleSheet } from 'react-native';
 import BottomNav from '@/components/BottomNav';
-import LogoutButton from '@/components/LogoutButton'; // Import the LogoutButton component
 
 const CalendarPage = () => {
   const router = useRouter();
@@ -52,12 +51,6 @@ const CalendarPage = () => {
           }}
         />
       </View>
-
-      {/* Logout Button */}
-      <View style={styles.logoutButtonContainer}>
-        <LogoutButton />
-      </View>
-
       {/* Bottom Navigation */}
       <View style={styles.bottomNavContainer}>
         <BottomNav
@@ -92,12 +85,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-  },
-  logoutButtonContainer: {
-    position: 'absolute',
-    top: 40,  // Adjust the top position to your preference
-    right: 20,  // Positioning it on the right side of the screen
-    zIndex: 1,  // Ensure it appears above other elements
   },
 });
 
