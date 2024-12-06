@@ -8,6 +8,7 @@ import useUser from '../hooks/userHook';
 import LogoutButton from '../components/LogoutButton';
 import BottomNav from '@/components/BottomNav';
 import { useRouter } from 'expo-router';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const Fridge_Pantry: React.FC = () => {
   const router = useRouter()
@@ -22,6 +23,7 @@ const Fridge_Pantry: React.FC = () => {
   const [calories, setCalories] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [targetLocation, setTargetLocation] = useState('fridge');
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -46,6 +48,18 @@ const Fridge_Pantry: React.FC = () => {
     const results = await searchAllItems(query.trim());
     setSearchResults(results);
   };
+
+  
+  const handleCopyContents = () => {
+    const fridgeData = fridgeItems.map(item => `${item.foodName}: ${item.quantity}, ${item.calories} kcal`).join('\n');
+    const pantryData = pantryItems.map(item => `${item.foodName}: ${item.quantity}, ${item.calories} kcal`).join('\n');
+  
+    const combinedData = `Fridge:\n${fridgeData}\n\nPantry:\n${pantryData}`;
+    
+    Clipboard.setString(combinedData);
+    alert('Contents copied to clipboard!');
+  };  
+  
 
   const handleSelectItem = async (item) => {
     const details = await searchOneItem(item.name);
@@ -159,6 +173,7 @@ const Fridge_Pantry: React.FC = () => {
         </TouchableOpacity>
       </View>
 
+
       {/* Search Results */}
       {searchQuery.trim() !== '' && searchResults.length > 0 && (
         <View style={styles.dropdownContainer}>
@@ -212,77 +227,76 @@ const Fridge_Pantry: React.FC = () => {
 
 {selectedItem && (
   <Modal
-    visible={modalVisible}
-    animationType="slide" // or "fade" depending on the effect you want
-    transparent={true}
-  >
-    <View style={styles.modalBackdrop}>
-      <View style={styles.modalContainer}>
-        <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
-          <Text style={styles.modalTitle}>{selectedItem.foodName}</Text>
-          <Text style={styles.modalSubText}>Brand: {selectedItem.brandName || 'N/A'}</Text>
-          <Text style={styles.modalSubText}>Base Calories: {selectedItem.calories} kcal</Text>
-          <Text style={styles.modalSubText}>Base Weight: {selectedItem.servingWeightGrams} g</Text>
 
-          <Text style={styles.label}>Select Measure:</Text>
-          <View style={{ alignItems: 'center' }}>
-  {/* Wrapper to center-align all buttons */}
-  {selectedItem.altMeasures.map((measure, index) => (
-    <TouchableOpacity
-      key={index}
-      style={[
-        styles.measureOption,
-        measure === selectedMeasure && styles.selectedMeasure,
-      ]}
-      onPress={() => handleMeasureChange(measure)}
-    >
-      {/* Add condition to check for valid values */}
-      <Text>
-        {measure?.measure || 'N/A'} ({measure?.serving_weight || '0'} g)
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
+  visible={modalVisible}
+  animationType="slide"
+  transparent={true}
+>
+  <View style={styles.modalBackdrop}>
+    <View style={styles.modalContainer}>
+      <Text style={styles.modalTitle}>{selectedItem.foodName}</Text>
+      <Text style={styles.modalSubText}>Brand: {selectedItem.brandName || 'N/A'}</Text>
+      <Text style={styles.modalSubText}>Base Calories: {selectedItem.calories} kcal</Text>
+      <Text style={styles.modalSubText}>Base Weight: {selectedItem.servingWeightGrams} g</Text>
 
-
-          <Text style={styles.label}>Enter Quantity:</Text>
-          <TextInput
-            style={styles.quantityInput}
-            keyboardType="numeric"
-            value={quantity.toString()}
-            onChangeText={handleQuantityChange}
-          />
-
-          <Text>Total Calories: {calories.toFixed(2)} kcal</Text>
-
-          <Text style={styles.label}>Add To:</Text>
-          <View style={styles.toggleContainer}>
-            <TouchableOpacity
-              style={[styles.toggleButton, targetLocation === 'fridge' && styles.selectedToggleButton]}
-              onPress={() => setTargetLocation('fridge')}
-            >
-              <Text>Fridge</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.toggleButton, targetLocation === 'pantry' && styles.selectedToggleButton]}
-              onPress={() => setTargetLocation('pantry')}
-            >
-              <Text>Pantry</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
-            <Text style={styles.addButtonText}>Add Item</Text>
+      <Text style={styles.label}>Select Measure:</Text>
+      {/* Scrollable Measures List */}
+      <ScrollView style={styles.measureScroll}>
+        {selectedItem.altMeasures.map((measure, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[styles.measureOption, measure === selectedMeasure && styles.selectedMeasure]}
+            onPress={() => handleMeasureChange(measure)}
+          >
+            <Text>{measure.measure} ({measure.serving_weight} g)</Text>
           </TouchableOpacity>
+        ))}
+      </ScrollView>
 
-          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-            <Text>Close</Text>
-          </TouchableOpacity>
-        </ScrollView>
+
+      <Text style={styles.label}>Enter Quantity:</Text>
+      <TextInput
+        style={styles.quantityInput}
+        keyboardType="numeric"
+        value={quantity.toString()}
+        onChangeText={handleQuantityChange}
+      />
+
+      <Text>Total Calories: {calories.toFixed(2)} kcal</Text>
+
+      <Text style={styles.label}>Add To:</Text>
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[styles.toggleButton, targetLocation === 'fridge' && styles.selectedToggleButton]}
+          onPress={() => setTargetLocation('fridge')}
+        >
+          <Text>Fridge</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleButton, targetLocation === 'pantry' && styles.selectedToggleButton]}
+          onPress={() => setTargetLocation('pantry')}
+        >
+          <Text>Pantry</Text>
+        </TouchableOpacity>
       </View>
+
+      <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+        <Text style={styles.addButtonText}>Add Item</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+        <Text style={styles.closeButtonText}>Close</Text>
+      </TouchableOpacity>
     </View>
-  </Modal>
+  </View>
+</Modal>
 )}
+
+
+      {/* Copy Contents Button */}
+      <TouchableOpacity style={styles.copyButton} onPress={handleCopyContents}>
+        <Text style={styles.copyButtonText}>Copy Contents</Text>
+      </TouchableOpacity>
 
       {/* Bottom Navigation */}
       <BottomNav
@@ -432,7 +446,7 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     backgroundColor: '#eee',
     borderRadius: 5,
   },
@@ -517,6 +531,38 @@ const styles = StyleSheet.create({
   //   flex: 1,
   //   backgroundColor: '#fff',
   // },
+  measureScroll: {
+    maxHeight: 150, // Restrict the height of the measure list
+    width: '100%',
+    marginVertical: 10,
+  },
+  measureOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+    marginBottom: 5,
+    alignItems: 'center',
+  },
+  selectedMeasure: {
+    backgroundColor: '#4CAF50',
+  },
+  copyButton: {
+    backgroundColor: '#ff870a',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  copyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  
+  
 });
 
 export default Fridge_Pantry;
