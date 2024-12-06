@@ -13,7 +13,7 @@ import {
   Modal,
 } from "react-native";
 import { searchAllItems, searchOneItem } from "../../api/searchController"; // Import your search functions
-import { checkIfDayAvailable, addMealToDay } from "../../api/dayController"; // Assuming this is your meal data API
+import { checkIfDayAvailable, addMealToDay, deleteMealFromDay } from "../../api/dayController"; // Assuming this is your meal data API
 import useUser from "../../hooks/userHook";
 
 const MealPlanPage = () => {
@@ -32,13 +32,28 @@ const MealPlanPage = () => {
   const [queryLunch, setQueryLunch] = useState<string>("");
   const [queryDinner, setQueryDinner] = useState<string>("");
 
+  // Calculate total calories from meals
+  const calculateTotalCalories = () => {
+    let totalCalories = 0;
+    if (dayData) {
+      ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
+        const mealData = dayData[mealType];
+        if (mealData) {
+          mealData.forEach((meal: any) => {
+            totalCalories += parseFloat(meal.calories) || 0; // Add calories for each meal, ensuring a default value of 0 if calories are missing
+          });
+        }
+      });
+    }
+    return totalCalories.toFixed(2); // Return total calories as a string with 2 decimal places
+  };
+
   useEffect(() => {
     const fetchDayData = async () => {
       try {
         if (!user?.token || !date) return; // Ensure token and date are available
         setLoading(true);
         const data = await checkIfDayAvailable(date, user.token);
-        console.log(data);
         setDayData(data.day);
       } catch (error: any) {
         Alert.alert("Error", error.message || "Failed to fetch meal data.");
@@ -70,7 +85,7 @@ const MealPlanPage = () => {
     } finally {
       setSearchLoading(false);
     }
-  };;
+  };
 
   const handleSelectItem = async (item: any) => {
     try {
@@ -89,17 +104,24 @@ const MealPlanPage = () => {
       // Add the selected item to the day
       const meal = {
         recipeName: selectedItem.foodName,
+        calories: selectedItem.calories,
         ingredients: [],
       };
       const response = await addMealToDay(date, mealType, meal, user.token);
-
-      console.log(response);
-
-      // Update the dayData after the meal is added
       setDayData(response.day);
       setShowModal(false); // Close the modal after adding
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to add meal to the day.");
+    }
+  };
+
+  const handleDeleteMeal = async (mealType: string, mealName: string) => {
+    try {
+      // Delete the meal from the day
+      const response = await deleteMealFromDay(date, mealType, mealName, user.token);
+      setDayData(response.day); // Update dayData after deletion
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to delete meal.");
     }
   };
 
@@ -141,16 +163,21 @@ const MealPlanPage = () => {
         </>
       )}
       {dayData && dayData[meal.toLowerCase()] ? (
-        <Text style={styles.mealContent}>
-          {dayData[meal.toLowerCase()].map(
-            (item: any, index: number, array: any[]) => (
-              <Text key={index}>
-                {item.recipeName || "No items added"}
-                {index < array.length - 1 && ", "}
-              </Text>
-            )
+        <FlatList
+          data={dayData[meal.toLowerCase()]}
+          keyExtractor={(item: any) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.mealItem}>
+              <Text style={styles.mealContent}>{item.recipeName} - {item.calories}</Text>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteMeal(meal.toLowerCase(), item._id)}
+              >
+                <Text style={styles.deleteText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           )}
-        </Text>
+        />
       ) : (
         <Text style={styles.mealContent}>No items added</Text>
       )}
@@ -165,18 +192,21 @@ const MealPlanPage = () => {
     );
   }
 
+  const totalCalories = calculateTotalCalories();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Planner</Text>
       <Text style={styles.subtitle}>Date: {date}</Text>
+      <Text style={styles.totalCalories}>Total Calories: {totalCalories}</Text>
       {renderMealSection(
-  "Breakfast",
-  queryBreakfast,
-  setQueryBreakfast,
-  "breakfast"
-)}
-{renderMealSection("Lunch", queryLunch, setQueryLunch, "lunch")}
-{renderMealSection("Dinner", queryDinner, setQueryDinner, "dinner")}
+        "Breakfast",
+        queryBreakfast,
+        setQueryBreakfast,
+        "breakfast"
+      )}
+      {renderMealSection("Lunch", queryLunch, setQueryLunch, "lunch")}
+      {renderMealSection("Dinner", queryDinner, setQueryDinner, "dinner")}
 
       {/* Modal for selected item */}
       {selectedItem && (
@@ -216,79 +246,85 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  subtitle: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  mealContent: {
-    fontSize: 16,
-    color: "#666",
-    marginTop: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  resultItem: {
-    padding: 10,
     backgroundColor: "#f9f9f9",
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  resultText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  selectedItemContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 5,
   },
   center: {
     justifyContent: "center",
     alignItems: "center",
   },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ff6600",
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "#ff6600",
+  },
+  section: {
+    marginVertical: 10,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  mealItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+  },
+  mealContent: {
+    fontSize: 16,
+  },
+  deleteButton: {
+    backgroundColor: "#ff6600",
+    padding: 5,
+    borderRadius: 5,
+  },
+  deleteText: {
+    color: "#fff",
+  },
+  resultItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+  },
+  resultText: {
+    fontSize: 16,
+  },
+  totalCalories: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 20,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "80%",
   },
   selectedItemTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 10,
   },
   selectedItemText: {
     fontSize: 16,
-    marginTop: 10,
-  },
-  modalContent: {
-    padding: 20,
-    backgroundColor: "white",
-    borderRadius: 10,
-    width: "80%",
+    marginBottom: 10,
   },
 });
 

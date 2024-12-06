@@ -78,5 +78,48 @@ const addMealToDay = async (date, mealType, mealData, token) => {
     }
 }
 
+const deleteMealFromDay = async (date, mealType, mealId, token) => {
+    try {
+        // Log the API call for debugging purposes
+        console.log(`Making DELETE request to: ${CONFIG.BASE_URL}/api/day/`);
 
-export { checkIfDayAvailable, addMealToDay };
+        // Make the API call with the required parameters
+        const res = await fetch(`${CONFIG.BASE_URL}/api/day/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${token}`, // Include the token in the headers
+            },
+            body: JSON.stringify({
+                date: date, // The date in YYYY-MM-DD format
+                mealType: mealType, // The type of meal (e.g., breakfast, lunch, dinner)
+                mealId: mealId, // The ID of the meal to delete
+            }),
+        });
+
+        // Check if the response status is okay
+        if (!res.ok) {
+            // Parse error message from the response
+            const errorData = await res.json();
+            console.error(`Error from server: ${errorData.error}`);
+            throw new Error(errorData.error || 'Something went wrong. Please try again.');
+        }
+
+        // Parse the response JSON
+        const data = await res.json();
+        return data; // Return the updated day object with the meal removed
+
+    } catch (error) {
+        // Log the error for debugging
+        console.error('Error in deleteMealFromDay:', error.message);
+
+        // Rethrow the error to allow calling functions to handle it further if needed
+        throw new Error(
+            error.message || 'Unable to delete meal from day. Please try again later.'
+        );
+    }
+};
+
+
+
+export { checkIfDayAvailable, addMealToDay, deleteMealFromDay };
