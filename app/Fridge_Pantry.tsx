@@ -49,6 +49,7 @@ const Fridge_Pantry: React.FC = () => {
 
   const handleSelectItem = async (item) => {
     const details = await searchOneItem(item.name);
+    console.log("Selected Item111: ", details[0]);
     if (details.length > 0) {
       setSelectedItem(details[0]);
       setSelectedMeasure(details[0].altMeasures[0]);
@@ -56,6 +57,8 @@ const Fridge_Pantry: React.FC = () => {
       setCalories(details[0].calories);
       setModalVisible(true);
     }
+
+    console.log("Selected Item: ", details[0]);
   };
 
   const handleAddItem = async () => {
@@ -175,8 +178,6 @@ const Fridge_Pantry: React.FC = () => {
         </View>
       )}
 
-
-
       {/* Fridge Items */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.sectionContainer}>
@@ -224,20 +225,25 @@ const Fridge_Pantry: React.FC = () => {
           <Text style={styles.modalSubText}>Base Weight: {selectedItem.servingWeightGrams} g</Text>
 
           <Text style={styles.label}>Select Measure:</Text>
-          <View style={{ alignItems: 'center' }}> {/* Wrapper to center-align all buttons */}
-            {selectedItem.altMeasures.map((measure, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.measureOption, measure === selectedMeasure && styles.selectedMeasure]}
-                onPress={() => handleMeasureChange(measure)}
-              >
-                <Text>{measure.measure} ({measure.serving_weight} g)</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <View style={{ alignItems: 'center' }}>
+  {/* Wrapper to center-align all buttons */}
+  {selectedItem.altMeasures.map((measure, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.measureOption,
+        measure === selectedMeasure && styles.selectedMeasure,
+      ]}
+      onPress={() => handleMeasureChange(measure)}
+    >
+      {/* Add condition to check for valid values */}
+      <Text>
+        {measure?.measure || 'N/A'} ({measure?.serving_weight || '0'} g)
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
 
-
-          
 
           <Text style={styles.label}>Enter Quantity:</Text>
           <TextInput
