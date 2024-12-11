@@ -5,6 +5,7 @@ import { searchRoutes } from './routes/searchRoutes.js';
 import { fridgeRoutes } from './routes/fridgeRoutes.js';
 import { pantryRoutes } from './routes/pantryRoutes.js';
 import { dayRoutes } from './routes/dayRoutes.js';
+import { recipeRoutes } from './routes/recipeRoutes.js';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
@@ -20,10 +21,11 @@ app.use('/api/search', searchRoutes);
 app.use('/api/fridge', fridgeRoutes);
 app.use('/api/pantry', pantryRoutes);
 app.use('/api/day', dayRoutes);
+app.use('/api/recipe', recipeRoutes);
 
 mongoose.connect('mongodb+srv://sergiok:Ivyleague123@cluster0.yqwum.mongodb.net', { dbName: 'demo_db' }).then(() => {
     console.log('Connected to MongoDB');
-    app.listen(4000, '0.0.0.0', () => {
+    app.listen(4000, 'localhost', () => {
         console.log('listening on port 4000');
     });
 }).catch(err => {
