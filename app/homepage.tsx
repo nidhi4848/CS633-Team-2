@@ -30,19 +30,25 @@ const Homepage: React.FC = () => {
 
           {/* Buttons Section */}
           <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/Fridge_Pantry')}>
+            <TouchableOpacity style={styles.button} 
+            testID="fridge-pantry-button"
+            onPress={() => router.push('/Fridge_Pantry')}>
               <Text style={styles.buttonText}>Fridge & Pantry</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/meal-plan/calendarpage')}>
+            <TouchableOpacity style={styles.button}
+            testID="meal-plans-button"
+            onPress={() => router.push('/meal-plan/calendarpage')}>
               <Text style={styles.buttonText}>Meal Plans</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/recipes')}>
+            <TouchableOpacity style={styles.button}
+            testID="recipes-button"
+            onPress={() => router.push('/recipes')}>
               <Text style={styles.buttonText}>Recipes</Text>
             </TouchableOpacity>
           </View>
-          <LogoutButton />
+          <LogoutButton/>
         </View>
       </View>
     </ImageBackground>
