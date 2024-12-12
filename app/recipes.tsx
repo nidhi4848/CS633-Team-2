@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
 import { searchAllItems, searchOneItem } from "../api/searchController";
 import useUser from '../hooks/userHook';
-import {getUserRecipes} from '../api/recipeController';
+import {getUserRecipes, addRecipe, deleteRecipe} from '../api/recipeController';
 
 const Recipes: React.FC = () => {
   const router = useRouter();
@@ -37,10 +37,8 @@ const Recipes: React.FC = () => {
   }, [user?.token]);
 
   const fetchUserRecipes = async () => {
-
     const fetchItems = async () => {
       try {
-      
         if (!user.token) {
           Alert.alert('Error', 'No authentication token found');
           return;
@@ -48,19 +46,24 @@ const Recipes: React.FC = () => {
   
         setIsLoading(true);
         const recipes = await getUserRecipes(user.token);
-        console.log("ingredients: ", recipes.recipes[0].ingredients);
-        setRecipesData(recipes.recipes);
+  
+        if (!recipes.recipes || recipes.recipes.length === 0) {
+          setRecipesData([]); // Clear any previous data if no recipes are found
+        } else {
+          setRecipesData(recipes.recipes);
+        }
       } catch (error) {
         Alert.alert('Error', error.message);
       } finally {
         setIsLoading(false);
       }
-    }
-
+    };
+  
     if (user?.token) {
       fetchItems();
     }
   };
+  
 
   const toggleAddModal = () => {
     setAddModalVisible(!isAddModalVisible);
@@ -195,19 +198,28 @@ const Recipes: React.FC = () => {
     setTotalCalories(total);
   };
 
-  const handleAddRecipe = () => {
+  const handleAddRecipe = async () => {
     if (
       newRecipeTitle.trim() &&
       instructions.trim() &&
       ingredients.every((ing) => ing.name && ing.quantity)
     ) {
       const newRecipe = {
-        id: (recipesData.length + 1).toString(),
-        title: newRecipeTitle.trim(),
-        ingredients,
+        recipeName: newRecipeTitle.trim(),
+        ingredients: ingredients.map((ing) => ({
+          foodName: ing.name,
+          quantity: ing.quantity,
+          calories: ing.calories,
+          measurement: ing.measure,
+        })),
         instructions,
-        totalCalories,
+        calories: totalCalories,
       };
+
+      const recipeData = await addRecipe(newRecipe, user.token);
+      
+      newRecipe._id = recipeData.recipe._id;
+
       setRecipesData([...recipesData, newRecipe]);
       resetAddRecipeForm();
     } else {
@@ -217,8 +229,10 @@ const Recipes: React.FC = () => {
     }
   };
 
-  const handleDeleteRecipe = (id) => {
-    const updatedRecipes = recipesData.filter((recipe) => recipe.id !== id);
+  const handleDeleteRecipe = async (id) => {
+    console.log("Deleting recipe with ID:", id);
+    const updatedRecipes = recipesData.filter((recipe) => recipe._id !== id);
+    await deleteRecipe(id, user.token);
     setRecipesData(updatedRecipes);
     setViewModalVisible(false);
   };
@@ -318,9 +332,6 @@ const Recipes: React.FC = () => {
 
   return (
      // Your state and variables
-  console.log("Recipes Data:", 
-    
-  ), // Log the data here
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
@@ -406,18 +417,23 @@ const Recipes: React.FC = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{selectedRecipe?.recipeName}</Text>
-            <Text style={styles.sectionSubtitle}>Ingredients:</Text>
-            {selectedRecipe?.recipe.ingredients.map((ingredient, index) => (
-              <Text key={index} style={styles.ingredientText}>
-                {`${ingredient.foodName} - ${ingredient.quantity} - ${ingredient.calories} (${ingredient.calories.toFixed(2)} cal)`}
-              </Text>
-            ))}
+            {/* Ingredients Section */}
+<Text style={styles.sectionSubtitle}>Ingredients:</Text>
+{selectedRecipe?.recipe.ingredients.map((ingredient, index) => (
+  <Text key={index} style={styles.ingredientText}>
+    {`• ${ingredient.foodName} - ${ingredient.quantity} ${ingredient.measurement} - (${ingredient.calories.toFixed(2)} cal)`}
+  </Text>
+))}
+
+            <Text style={styles.totalCaloriesText}>
+              Total Calories: {selectedRecipe?.recipe.calories.toFixed(2)}
+            </Text>
             <Text style={styles.sectionSubtitle}>Instructions:</Text>
             <Text>{selectedRecipe?.recipe.instructions}</Text>
             <View style={styles.actionButtons}>
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDeleteRecipe(selectedRecipe?._id)}
+                onPress={() => handleDeleteRecipe(selectedRecipe?.recipe._id)}
               >
                 <Text style={styles.deleteButtonText}>Delete</Text>
               </TouchableOpacity>
