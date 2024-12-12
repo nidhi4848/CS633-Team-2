@@ -29,7 +29,6 @@ const addIngredientToFridge = async (req, res) => {
             foodName: req.body.foodName,
             quantity: req.body.quantity,
             calories: req.body.calories,
-            measurement: '',
         });
         
         // Save the new ingredient

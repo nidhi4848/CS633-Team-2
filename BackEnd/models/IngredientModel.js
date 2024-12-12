@@ -12,7 +12,6 @@ const ingredientSchema = new mongoose.Schema({
     },
     measurement: {
         type: String,
-        required: true,
     },
     calories: {
         type: Number,
