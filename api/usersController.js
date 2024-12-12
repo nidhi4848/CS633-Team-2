@@ -1,4 +1,4 @@
-import CONFIG from '../config.js';
+import CONFIG from '../config';
 
 console.log(CONFIG.BASE_URL);
 
