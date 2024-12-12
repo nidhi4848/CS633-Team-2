@@ -189,6 +189,7 @@ const RegistrationScreen: React.FC = () => {
           </View>
 
           <TouchableOpacity
+            testID="registerButton"
             style={styles.registerButton}
             onPress={handleRegistration}
             disabled={isLoading}
