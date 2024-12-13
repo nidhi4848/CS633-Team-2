@@ -21,7 +21,6 @@ The application combines the power of modern technology with a simple interface,
 - [Technology Stack](#technology-stack)
 - [Installation](#installation)
 - [Using Expo Go](#using-expo-go)
-- [Contributing](#contributing)
 
 ## Features
 
@@ -131,12 +130,3 @@ Expo Go is a powerful tool that allows you to run your React Native projects on 
 
 5. **Interact with the App**:
    You can now interact with the Smart Fridge Tracker app on your device. Any changes you make to the code will be automatically reflected on your device.
-
-## Contributing
-
-We welcome contributions from the community. If you want to contribute to the project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch.
-3. Make your changes.
-4. Submit a pull request.
