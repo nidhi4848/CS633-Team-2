@@ -118,7 +118,7 @@ Expo Go is a powerful tool that allows you to run your React Native projects on 
 2. **Start the Expo Project**:
    Navigate to the root directory of the Smart Fridge Tracker project and start the Expo server:
    ```bash
-   expo start
+   npx expo start
    ```
 
 3. **Download the Expo Go App**:
