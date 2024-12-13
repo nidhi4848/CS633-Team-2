@@ -22,6 +22,7 @@ The application combines the power of modern technology with a simple interface,
 - [Installation](#installation)
 - [Using Expo Go](#using-expo-go)
 - [Test Report](#test-report)
+- [Presentation](#presentation)
 
 ## Features
 
@@ -137,3 +138,7 @@ Expo Go is a powerful tool that allows you to run your React Native projects on 
 
 The detailed software test report for the Smart Fridge Tracker can be found at the following path:
 [Software Test Report](Doc/Software%20Test%20Report.pdf)
+
+The project presentation for the Smart Fridge Tracker can be found at the following path:
+[Project Presentation](Doc/Smart%20Fridge%20Tracker.pptx)
+
