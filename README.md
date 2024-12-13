@@ -21,6 +21,7 @@ The application combines the power of modern technology with a simple interface,
 - [Technology Stack](#technology-stack)
 - [Installation](#installation)
 - [Using Expo Go](#using-expo-go)
+- [Test Report](#test-report)
 
 ## Features
 
@@ -75,6 +76,12 @@ Secure and straightforward user authentication ensures that your data is safe. T
   - Render: For application deployment.
 
 ![Tools Connectivity Diagram](Doc/TeckStack.png)
+
+## Test Report
+
+The detailed software test report for the Smart Fridge Tracker can be found at the following path:
+[Software Test Report](Doc/Software%20Test%20Report.pdf)
+
 
 ## Installation
 
