@@ -77,11 +77,6 @@ Secure and straightforward user authentication ensures that your data is safe. T
 
 ![Tools Connectivity Diagram](Doc/TeckStack.png)
 
-## Test Report
-
-The detailed software test report for the Smart Fridge Tracker can be found at the following path:
-[Software Test Report](Doc/Software%20Test%20Report.pdf)
-
 
 ## Installation
 
@@ -137,3 +132,8 @@ Expo Go is a powerful tool that allows you to run your React Native projects on 
 
 5. **Interact with the App**:
    You can now interact with the Smart Fridge Tracker app on your device. Any changes you make to the code will be automatically reflected on your device.
+
+## Test Report
+
+The detailed software test report for the Smart Fridge Tracker can be found at the following path:
+[Software Test Report](Doc/Software%20Test%20Report.pdf)
