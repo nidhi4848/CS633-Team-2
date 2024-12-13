@@ -1,5 +1,14 @@
 # CS633-Team-2
 
+Team Member    | Roles
+-------------- | -------------
+Paridhi Talwar | Requirement Lead, QA Lead
+Nidhi Desai    | QA Lead, Frontend Lead
+Sergio Khalil  | Backend Developer, Frontend Lead
+Sonny Wibisono | Project Manager, Front End Developer
+Chaojin Guo    | UI Designer & Front End Developer
+Zi Wang        | Backend Developer
+
 # Smart Fridge Tracker
 
 The Smart Fridge Tracker is an innovative and user-friendly application designed to revolutionize how you manage your kitchen inventory. Whether you're a busy professional, a home cook, or a culinary enthusiast, this app will help you keep track of your fridge and pantry items efficiently. By offering a comprehensive solution for managing ingredients, recipes, meal plans, and calorie tracking, Smart Fridge Tracker ensures you never run out of essential items, always have fresh ingredients at hand, and can maintain a healthy diet.
@@ -13,7 +22,6 @@ The application combines the power of modern technology with a simple interface,
 - [Installation](#installation)
 - [Using Expo Go](#using-expo-go)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -132,7 +140,3 @@ We welcome contributions from the community. If you want to contribute to the pr
 2. Create a new branch.
 3. Make your changes.
 4. Submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
