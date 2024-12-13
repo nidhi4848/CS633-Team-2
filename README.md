@@ -140,5 +140,5 @@ The detailed software test report for the Smart Fridge Tracker can be found at t
 [Software Test Report](Doc/Software%20Test%20Report.pdf)
 
 The project presentation for the Smart Fridge Tracker can be found at the following path:
-[Project Presentation](Doc/Smart%20Fridge%20Tracker.pptx)
+[Project Presentation](Doc/Smart Fridge Tracker.pptx.pdf)
 
