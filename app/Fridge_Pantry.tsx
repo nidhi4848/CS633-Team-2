@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, FlatList, Modal } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { searchAllItems, searchOneItem } from '../api/searchController';
-import { getUserFridge, addItemToFridge, deleteFromFridge } from '../api/fridgeController';
-import { getUserPantry, addItemToPantry, deleteFromPantry } from '../api/pantryController';
+import { getUserFridge, addItemToFridge, deleteFromFridge } from '../api/fridgeController'; // Import fridge API functions
+import { getUserPantry, addItemToPantry, deleteFromPantry } from '../api/pantryController'; // Import pantry API functions
 import useUser from '../hooks/userHook';
 import LogoutButton from '../components/LogoutButton';
 import BottomNav from '@/components/BottomNav';
@@ -28,7 +28,8 @@ const Fridge_Pantry: React.FC = () => {
       try {
         const fridgeData = await getUserFridge(user.token);
         await setFridgeItems(fridgeData.ingredients);
-        const pantryData = await getUserPantry(user.token);
+        // Similarly, fetch pantry items
+        const pantryData = await getUserPantry(user.token); // You would likely have a separate API call for the pantry
         await setPantryItems(pantryData.ingredients);
       } catch (error) {
         console.error('Error fetching items:', error);
@@ -48,6 +49,7 @@ const Fridge_Pantry: React.FC = () => {
 
   const handleSelectItem = async (item) => {
     const details = await searchOneItem(item.name);
+    console.log("Selected Item111: ", details[0]);
     if (details.length > 0) {
       setSelectedItem(details[0]);
       setSelectedMeasure(details[0].altMeasures[0]);
@@ -55,6 +57,8 @@ const Fridge_Pantry: React.FC = () => {
       setCalories(details[0].calories);
       setModalVisible(true);
     }
+
+    console.log("Selected Item: ", details[0]);
   };
 
   const handleAddItem = async () => {
@@ -66,12 +70,14 @@ const Fridge_Pantry: React.FC = () => {
 
     try {
       if (targetLocation === 'fridge') {
+        console.log('Adding to fridge:', itemToAdd);
         await addItemToFridge(itemToAdd, user.token);
         setFridgeItems((prevItems) => [...prevItems, itemToAdd]);
       } else {
         await addItemToPantry(itemToAdd, user.token);
         setPantryItems((prevItems) => [...prevItems, itemToAdd]);
       }
+      
       setModalVisible(false);
       setSearchQuery('');
       setSearchResults([]);
@@ -136,61 +142,67 @@ const Fridge_Pantry: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {/* Logout Button in Top-Right Corner */}
       <View style={styles.logoutButtonContainer}>
         <LogoutButton />
       </View>
-
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <TextInput
-          testID="searchInput"
           style={styles.searchInput}
           placeholder="Search for an ingredient"
           value={searchQuery}
           onChangeText={handleSearchChange}
         />
-        <TouchableOpacity testID="searchButton" style={styles.searchButton} onPress={() => handleSearch(searchQuery)}>
+        <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch(searchQuery)}>
           <Text style={styles.searchButtonText}>Search</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Search Results */}
       {searchQuery.trim() !== '' && searchResults.length > 0 && (
         <View style={styles.dropdownContainer}>
           <FlatList
-            testID="searchResultsList"
             data={searchResults}
             keyExtractor={(item, index) => `${item.name}-${index}`}
             renderItem={({ item }) => (
-              <TouchableOpacity testID={`searchItem-${item.name}`} style={styles.dropdownItem} onPress={() => handleSelectItem(item)}>
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => handleSelectItem(item)}
+              >
                 <Text style={styles.dropdownText}>{item.name}</Text>
               </TouchableOpacity>
             )}
+            showsVerticalScrollIndicator={false} // Hide vertical scroll indicator for cleaner UI
           />
         </View>
       )}
 
+      {/* Fridge Items */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle} testID="fridge-header">Fridge</Text>
+          <Text style={styles.sectionTitle}>Fridge</Text>
           {fridgeItems.map((item, index) => (
-            <View key={index} style={styles.row} testID="fridge-item">
+            <View key={index} style={styles.row}>
               <Text style={styles.column}>{item.foodName}</Text>
               <Text style={styles.column}>{item.quantity}</Text>
               <Text style={styles.column}>{item.calories} kcal</Text>
-              <TouchableOpacity testID={`deleteFridgeItem-${item.foodName}`} onPress={() => handleDeleteItem(item, 'fridge')}>
+              <TouchableOpacity onPress={() => handleDeleteItem(item, 'fridge')}>
                 <MaterialIcons name="delete" size={24} color="red" />
               </TouchableOpacity>
             </View>
           ))}
         </View>
 
+        {/* Pantry Items */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle} testID="pantry-header">Pantry</Text>
+          <Text style={styles.sectionTitle}>Pantry</Text>
           {pantryItems.map((item, index) => (
-            <View key={index} style={styles.row} testID="pantry-item">
+            <View key={index} style={styles.row}>
               <Text style={styles.column}>{item.foodName}</Text>
               <Text style={styles.column}>{item.quantity}</Text>
               <Text style={styles.column}>{item.calories} kcal</Text>
-              <TouchableOpacity testID={`deletePantryItem-${item.foodName}`} onPress={() => handleDeleteItem(item, 'pantry')}>
+              <TouchableOpacity onPress={() => handleDeleteItem(item, 'pantry')}>
                 <MaterialIcons name="delete" size={24} color="red" />
               </TouchableOpacity>
             </View>
@@ -198,79 +210,313 @@ const Fridge_Pantry: React.FC = () => {
         </View>
       </ScrollView>
 
-      {selectedItem && (
-        <Modal testID="itemModal" visible={modalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalBackdrop}>
-            <View style={styles.modalContainer}>
-              <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
-                <Text style={styles.modalTitle} testID="modalTitle">{selectedItem.foodName}</Text>
-                <Text style={styles.modalSubText} testID="modalBrand">Brand: {selectedItem.brandName || 'N/A'}</Text>
-                <Text style={styles.modalSubText} testID="modalCalories">Base Calories: {selectedItem.calories} kcal</Text>
-                <Text style={styles.modalSubText} testID="modalWeight">Base Weight: {selectedItem.servingWeightGrams} g</Text>
+{selectedItem && (
+  <Modal
+    visible={modalVisible}
+    animationType="slide" // or "fade" depending on the effect you want
+    transparent={true}
+  >
+    <View style={styles.modalBackdrop}>
+      <View style={styles.modalContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollView}>
+          <Text style={styles.modalTitle}>{selectedItem.foodName}</Text>
+          <Text style={styles.modalSubText}>Brand: {selectedItem.brandName || 'N/A'}</Text>
+          <Text style={styles.modalSubText}>Base Calories: {selectedItem.calories} kcal</Text>
+          <Text style={styles.modalSubText}>Base Weight: {selectedItem.servingWeightGrams} g</Text>
 
-                <Text style={styles.label} testID="selectMeasureLabel">Select Measure:</Text>
-                <View style={{ alignItems: 'center' }}>
-                  {selectedItem.altMeasures.map((measure, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      testID={`measureOption-${measure.measure}`}
-                      style={[styles.measureOption, measure === selectedMeasure && styles.selectedMeasure]}
-                      onPress={() => handleMeasureChange(measure)}
-                    >
-                      <Text>{measure?.measure || 'N/A'} ({measure?.serving_weight || '0'} g)</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+          <Text style={styles.label}>Select Measure:</Text>
+          <View style={{ alignItems: 'center' }}>
+  {/* Wrapper to center-align all buttons */}
+  {selectedItem.altMeasures.map((measure, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.measureOption,
+        measure === selectedMeasure && styles.selectedMeasure,
+      ]}
+      onPress={() => handleMeasureChange(measure)}
+    >
+      {/* Add condition to check for valid values */}
+      <Text>
+        {measure?.measure || 'N/A'} ({measure?.serving_weight || '0'} g)
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
 
-                <Text style={styles.label}>Enter Quantity:</Text>
-                <TextInput
-                  testID="quantityInput"
-                  style={styles.quantityInput}
-                  keyboardType="numeric"
-                  value={quantity.toString()}
-                  onChangeText={handleQuantityChange}
-                />
 
-                <Text>Total Calories: {calories.toFixed(2)} kcal</Text>
+          <Text style={styles.label}>Enter Quantity:</Text>
+          <TextInput
+            style={styles.quantityInput}
+            keyboardType="numeric"
+            value={quantity.toString()}
+            onChangeText={handleQuantityChange}
+          />
 
-                <Text style={styles.label} testID="addToLabel">Add To:</Text>
-                <View style={styles.toggleContainer}>
-                  <TouchableOpacity
-                    testID="addToFridge"
-                    style={[styles.toggleButton, targetLocation === 'fridge' && styles.selectedToggleButton]}
-                    onPress={() => setTargetLocation('fridge')}
-                  >
-                    <Text>Fridge</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    testID="addToPantry"
-                    style={[styles.toggleButton, targetLocation === 'pantry' && styles.selectedToggleButton]}
-                    onPress={() => setTargetLocation('pantry')}
-                  >
-                    <Text>Pantry</Text>
-                  </TouchableOpacity>
-                </View>
+          <Text>Total Calories: {calories.toFixed(2)} kcal</Text>
 
-                <TouchableOpacity testID="addButton" style={styles.addButton} onPress={handleAddItem}>
-                  <Text style={styles.addButtonText}>Add Item</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity testID="closeModalButton" style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                  <Text>Close</Text>
-                </TouchableOpacity>
-              </ScrollView>
-            </View>
+          <Text style={styles.label}>Add To:</Text>
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[styles.toggleButton, targetLocation === 'fridge' && styles.selectedToggleButton]}
+              onPress={() => setTargetLocation('fridge')}
+            >
+              <Text>Fridge</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.toggleButton, targetLocation === 'pantry' && styles.selectedToggleButton]}
+              onPress={() => setTargetLocation('pantry')}
+            >
+              <Text>Pantry</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      )}
 
-      <BottomNav testID="bottomNav" items={['Home', 'Pantry', 'Meals', 'Recipes', 'Profile']} onNavigate={handleNavigation} />
+          <TouchableOpacity style={styles.addButton} onPress={handleAddItem}>
+            <Text style={styles.addButtonText}>Add Item</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <Text>Close</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </View>
+  </Modal>
+)}
+
+      {/* Bottom Navigation */}
+      <BottomNav
+        items={['Home', 'Pantry', 'Meals', 'Recipes', 'Profile']}
+        onNavigate={handleNavigation}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // Existing styles remain unchanged
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop:20,
+    // paddingBottom: 100,
+    // justifyContent: 'center', // Centers items vertically
+    // alignItems: 'center', // Centers items horizontally
+  },
+  logoutButtonContainer: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    zIndex: 10,
+  },
+  logoutButton: {
+    paddingVertical: 10,
+    paddingHorizontal : 20,
+    backgroundColor: "ff870a",
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start', // Align to the left
+    alignItems: 'center',
+    marginTop: 60,
+    paddingHorizontal: 10, // Add padding if you want some space on the left
+  },
+  searchInput: {
+    width: '100%', // Adjust the width here (you can use specific pixel values like 250 or a percentage)
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    textAlign: 'left', // Align text to the left
+  },
+  searchButton: {
+    marginLeft: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#ff870a',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    color: '#fff',
+    textAlign: 'left',
+  },
+  resultItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // Center-aligns icon and text
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  resultText: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  sectionContainer: {
+    padding: 10,
+    alignItems: 'center',
+    width: '100%', 
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+  },
+  column: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '90%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalSubText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginVertical: 5,
+    textAlign: 'center',
+  },
+  quantityInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 8,
+    marginBottom: 10,
+    textAlign: 'center',
+    width: '100%',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginVertical: 10,
+  },
+  toggleButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#eee',
+    borderRadius: 5,
+  },
+  selectedToggleButton: {
+    backgroundColor: '#b2d7d7',
+  },
+  addButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  closeButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#ccc',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    textAlign: 'center',
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#ff870a',
+    width: '100%',
+  },
+  navItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  navText: {
+    textAlign: 'center',
+    color: '#fff'
+  },
+  measureOption: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center', // Centers the text within the button
+    justifyContent: 'center', // Ensures proper vertical alignment
+    width: '80%', // Set a consistent button width
+  },
+  selectedMeasure: {
+    backgroundColor: '#4CAF50', // Highlight selected measure
+  },
+  dropdownContainer: {
+    maxHeight: '40%', // Limit dropdown height
+    width: '100%',
+    alignSelf: 'center', // Center the dropdown on the screen
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginTop: 10,
+    zIndex: 1000, // Ensure the dropdown appears above other elements
+  },
+  dropdownItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  // containerNav: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  // },
 });
 
 export default Fridge_Pantry;

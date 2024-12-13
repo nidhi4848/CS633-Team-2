@@ -16,16 +16,12 @@
     "setupFiles": [
       "./jest.setup.js"
     ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!(expo-asset|expo-router|expo|react-native|@expo|@react-native|@react-navigation)/)"
-    ],
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/$1",
-      "\\.(jpg|jpeg|png|gif|webp|svg|ico|bmp|tiff)$": "<rootDir>/__mocks__/fileMock.js"
+      "^@/(.*)$": "<rootDir>/$1"
     }
   },
   "dependencies": {
-    "@expo/vector-icons": "^14.0.4",
+    "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/root": "github:react-native-async-storage/async-storage",
     "@react-native-community/datetimepicker": "^8.2.0",
     "@react-native-picker/picker": "2.9.0",
@@ -39,7 +35,6 @@
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.6",
     "expo-web-browser": "~14.0.1",
-    "next": "^15.1.0",
     "react": "18.3.1",
     "react-calendar": "^5.1.0",
     "react-dom": "18.3.1",
@@ -53,7 +48,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@babel/preset-typescript": "^7.26.0",
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.0",
